@@ -1,40 +1,34 @@
-import { NextResponse } from 'next/server'
-
-import type { NextRequest } from 'next/server'
-
+import { NextRequest, NextResponse } from "next/server";
+import { authMiddleware } from "next-firebase-auth-edge";
 
 export async function middleware(request: NextRequest) {
-  const session = request.cookies.get("session");
-
-  //Return to /login if don't have a session
-  if (!session) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  //Call the authentication endpoint
-  const responseAPI = await fetch(`${request.nextUrl.origin}/api/login`, {
-    headers: {
-      Cookie: `session=${session?.value}`,
+  return authMiddleware(request, {
+    loginPath: "/api/login",
+    logoutPath: "/api/logout",
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+    cookieName: "AuthToken",
+    cookieSignatureKeys: ["secret1", "secret2"],
+    cookieSerializeOptions: {
+      path: "/",
+      httpOnly: true,
+      secure: false, // Set this to true on HTTPS environments
+      sameSite: "lax" as const,
+      maxAge: 14 * 60 * 60 * 24, // 14 days
+    },
+    serviceAccount: {
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+      clientEmail:process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL!,
+      privateKey:process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY!,
     },
   });
-
-  //Return to /login if token is not authorized
-  if (responseAPI.status !== 200) {
-    return NextResponse.redirect(new URL("/auth/session", request.url));
-  }
-
-  return NextResponse.next();
 }
 
-// Ensure the middleware is only called for relevant paths.
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)', '/welcome'
+    "/api/login",
+    "/api/logout",
+    "/",
+    "/protected/:path*",
+    "/((?!_next|favicon.ico|api|.*\\.).*)",
   ],
-}
+};

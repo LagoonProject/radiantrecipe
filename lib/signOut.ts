@@ -9,7 +9,7 @@ async function signOutUser(router: AppRouterInstance) {
   await signOut(auth);
 
   //Clear the cookies in the server
-  const response = await fetch("http://localhost:3000/api/signOut", {
+  const response = await fetch("http://localhost:3000/api/auth/signOut", {
     method: "POST",
   });
 

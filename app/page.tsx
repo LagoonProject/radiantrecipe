@@ -21,7 +21,7 @@ export default function Home() {
       console.log("sign in proccess")
       setSignInButtonClicked(true);
 
-      sendMagicLink(email, "http://localhost:3000/welcome").then(() =>
+      sendMagicLink(email, "http://localhost:3000/protected/welcome").then(() =>
         setMagicEmail(email)
       );
 

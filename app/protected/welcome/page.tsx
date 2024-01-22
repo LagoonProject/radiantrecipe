@@ -24,7 +24,7 @@ export default function Welcome() {
     try {
       const credential = await signInWithMagicLink(email, window.location.href);
       const token = await credential.user.getIdToken();
-      const user = await fetch("/auth/session", {
+      const user = await fetch("api/auth/session", {
         method: "POST",
         headers: {
           authorization: `Bearer ${token}`,
