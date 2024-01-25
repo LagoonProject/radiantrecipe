@@ -1,36 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { Spinner } from "@nextui-org/react";
 
 import React, { useState } from "react";
 import { Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { useSendSignInLinkToEmail } from "react-firebase-hooks/auth";
+import { clientAuth } from "./firebase/firebase-client-config";
+import sendMagicEmail from "@/lib/auth/sendMagicEmail";
 
-import { sendMagicLink } from "@/lib/firebase/firebase-client-config";
-import { setMagicEmail } from "@/lib/localStorage/magicEmail";
 export default function Home() {
   const [email, setEmail] = React.useState("");
   const [signInButtonClicked, setSignInButtonClicked] = useState(false);
+
+
+
   const router = useRouter();
 
-  async function signInProcess() {
-    try {
-      console.log("sign in proccess")
-      setSignInButtonClicked(true);
+  const submit = async () => {
+    setSignInButtonClicked(true);
 
-      sendMagicLink(email, "http://localhost:3000/protected/welcome").then(() =>
-        setMagicEmail(email)
-      );
+    const success = await sendMagicEmail(email)
 
-      router.push("/thanksForSigningIn");
-    } catch (error) {
+    console.log("success", success);
+    setSignInButtonClicked(false);
 
-      console.log("sign in process", error)
-    }
-  }
+    router.push("/thanksForSigningIn");
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
@@ -46,14 +44,14 @@ export default function Home() {
           <Input
             type="email"
             label="Email"
-            onChange={(text) => setEmail(text.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
         <button
           className="text-xl font-semibold py-4 px-6 m-4 bg-slate-700 w-2/6 rounded-2xl"
-          onClick={signInProcess}
           disabled={signInButtonClicked}
+          onClick={submit}
         >
           {signInButtonClicked ? <Spinner /> : "Sign In"}
         </button>
