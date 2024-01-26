@@ -20,6 +20,6 @@ model User {
   stripePurchasedId String?
   subsciptionEnds   DateTime?
   recipes           String[]
-  pdf_guide_downloaded Boolean
+  pdf_guide_downloaded Boolean @default(false)
 }
 

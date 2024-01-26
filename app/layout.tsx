@@ -4,7 +4,7 @@ import "./globals.css";
 import { NextUIProviderComponent } from "./Components/Providers";
 
 import { NavBar } from "./Components/NavBar";
-import { AuthProviderComponent } from "./Components/Providers";
+
 
 import { cookies } from "next/headers";
 
@@ -24,12 +24,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProviderComponent>
+
           <NextUIProviderComponent>
             <NavBar />
             {children}
           </NextUIProviderComponent>
-        </AuthProviderComponent>
+
       </body>
     </html>
   );

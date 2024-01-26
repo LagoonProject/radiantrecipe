@@ -7,8 +7,6 @@ import { Spinner } from "@nextui-org/react";
 import React, { useState } from "react";
 import { Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useSendSignInLinkToEmail } from "react-firebase-hooks/auth";
-import { clientAuth } from "./firebase/firebase-client-config";
 import sendMagicEmail from "@/lib/auth/sendMagicEmail";
 
 export default function Home() {
@@ -20,9 +18,8 @@ export default function Home() {
   const submit = async () => {
     setSignInButtonClicked(true);
 
-    const success = await sendMagicEmail(email)
+    await sendMagicEmail(email);
 
-    console.log("success", success);
     setSignInButtonClicked(false);
 
     router.push("/thanksForSigningIn");
@@ -30,16 +27,11 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
-      <h1 className="text-3xl font-bold my-6">
-        Welcome to the Radiant Recipe!
-      </h1>
+      <h1 className="text-3xl font-bold my-6">Sign in to your account </h1>
 
       <div className="flex flex-col justify-center items-center w-full my-8">
         <p className="text-xl font-normal leading-relaxed my-4">
-          Create an account to get access to your FREE PDF Guide.
-        </p>
-        <p className="text-xl font-normal leading-relaxed my-4">
-          Simply provide your email to create an account.
+          Please provide your email.
         </p>
         <div className="mt-2 flex w-2/6">
           <Input

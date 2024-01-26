@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-
+import { NextResponse } from "next/server";
 //Route handler for logout endpoint that expires the session cookie
 export async function POST() {
   const options = {
@@ -9,11 +9,6 @@ export async function POST() {
   };
 
   cookies().set(options);
-  return (
-    new Response(),
-    {
-      status: 200,
-      headers: { "content-type": "application/json" },
-    }
-  );
+  return NextResponse.json({}, { status: 200 });
+
 }
