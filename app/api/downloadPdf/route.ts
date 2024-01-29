@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminStorage } from "@/app/firebase/firebase-admin-config";
 import { getDownloadURL } from "firebase-admin/storage";
+import { Readable } from 'node:stream';
 
 export async function GET() {
 
@@ -16,7 +17,8 @@ export async function GET() {
 
     const response = await fetch(downloadURL, { cache: 'no-store' });
 
-    console.log("response fetch(downloadURL)", response)
+
+    console.log("response fetch(downloadURL)", response.type)
 
     if (!response.ok) {
       throw new Error("Failed to fetch PDF from Firebase");
@@ -24,10 +26,14 @@ export async function GET() {
 
     const blob = await response.blob();
 
+    console.log("blobito server", blob)
+
     const headers = new Headers();
 
     headers.set("Content-Type", "application/pdf");
-    // headers.set('Content-Disposition', 'attachment; filename=RadiantRecipeGuide.pdf');
+    headers.set('Content-Disposition', 'attachment; filename=RadiantRecipeGuide.pdf');
+
+    // return NextResponse.json(response, { status: 200, statusText: "OK", headers });
 
 
     return new NextResponse(blob, { status: 200, statusText: "OK", headers });
