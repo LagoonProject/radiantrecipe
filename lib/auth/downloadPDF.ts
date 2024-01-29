@@ -1,63 +1,31 @@
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { clientStorage } from "@/app/firebase/firebase-client-config";
+import FileSaver from "file-saver";
 
 export const downloadPDF = async () => {
+  const fileRef = ref(clientStorage, "RadiantRecipeGuide.pdf");
+  const downloadURL = await getDownloadURL(fileRef);
+
+  console.log("client url downloadURL", downloadURL);
+
+
   try {
-    // Use fetch to download the file
-    const response = await fetch("/api/downloadPdf");
+    const fetchFile = async () => {
+      const response = await fetch(downloadURL);
 
-    console.log("response client", response.body)
+      console.log("client url response", response);
 
-    const blob = await response.blob();
 
-    console.log("blobito client", blob)
+      const blob = await response.blob();
+      return blob;
+    };
+    const download = async () => {
+      const blob = await fetchFile();
+      FileSaver.saveAs(blob, "RadiantRecipeGuide.pdf");
+    };
 
-    const blobUrl = window.URL.createObjectURL(new Blob([response.body]));
-
-    // Create an anchor element and trigger the download
-    const downloadLink = document.createElement("a");
-    downloadLink.href = blobUrl;
-    downloadLink.setAttribute("download", `RadiantRecipeGuide.pdf`);
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-
-    // Clean up to avoid memory leaks
-    document.body.removeChild(downloadLink);
-    URL.revokeObjectURL(blobUrl);
+    await download();
   } catch (error) {
     console.log("downloadPDF error", error);
   }
-
-  // .then((response) => {
-  //   console.log("response 1", response.type);
-  //   console.log("response ok", response.ok);
-  //   console.log("response ", response.body);
-
-  //   //   if (!response.ok) {
-  //   //     throw new Error("Network response was not ok");
-  //   //   }
-
-  //   return response.blob();
-  // })
-  // .then((blob) => {
-  //   console.log("response 2");
-
-  //   // Create a new URL for the blob
-  //   console.log("blob", blob);
-
-  //   const blobUrl = window.URL.createObjectURL(new Blob([blob]));
-
-  //   console.log("blobUrl", blobUrl);
-
-  //   // Create an anchor element and trigger the download
-  //   const downloadLink = document.createElement("a");
-  //   downloadLink.href = blobUrl;
-  //   downloadLink.setAttribute("download", `RadiantRecipeGuide.pdf`);
-  //   document.body.appendChild(downloadLink);
-  //   downloadLink.click();
-
-  //   // Clean up to avoid memory leaks
-  //   document.body.removeChild(downloadLink);
-  //   URL.revokeObjectURL(blobUrl);
-  // })
 };
