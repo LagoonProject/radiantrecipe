@@ -16,7 +16,7 @@ export default function MagicEmailCallbackWithSignIn() {
 
   useEffect(() => {
     const email = getMagicEmailFromLocalStorage();
-    console.log("email Welcome", email);
+
     (async () => {
       await signInWithEmailLink(email, window.location.href);
     })();
@@ -25,9 +25,8 @@ export default function MagicEmailCallbackWithSignIn() {
   const router = useRouter();
 
   if (user) {
+    postToken(user.user);
 
-      postToken(user.user);
-  
     router.push("/");
   }
 

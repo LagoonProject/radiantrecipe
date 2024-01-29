@@ -6,15 +6,11 @@ import { adminAuth } from "@/app/firebase/firebase-admin-config";
 export default async function getUser() {
   const session = cookies().get("session")?.value;
 
-  console.log("session", session)
-
   if (!session) {
     return null;
   }
 
   const user = await adminAuth.verifySessionCookie(session, true);
-
-  console.log("admin user",user)
 
   if (!user) {
     return null;

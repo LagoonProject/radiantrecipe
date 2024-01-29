@@ -7,8 +7,6 @@ import getUser from "@/lib/auth/get-user";
 export const NavBar = async () => {
   const user = await getUser();
 
-  console.log("navbar user", user);
-
   return (
     <div className="w-full h-12 bg-slate-500 px-6 flex flex-row items-center justify-between">
       <Link href="/">

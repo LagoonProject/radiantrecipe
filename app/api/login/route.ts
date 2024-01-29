@@ -11,16 +11,12 @@ import { NextResponse } from "next/server";
 export async function POST() {
   const authorization = headers().get("Authorization");
 
-  console.log("authorization", authorization);
   if (authorization?.startsWith("Bearer ")) {
-    console.log("dans if Post request handler");
 
     const idToken = authorization.split("Bearer ")[1];
     const decodedToken = await auth().verifyIdToken(idToken);
-    console.log("decodedToken", decodedToken);
-
+ 
     if (decodedToken) {
-      console.log("dans decodedToken");
 
       const expiresIn = 60 * 60 * 24 * 14 * 1000;
       const sessionCookie = await auth().createSessionCookie(idToken, {
