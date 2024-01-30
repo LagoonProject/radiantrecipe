@@ -3,28 +3,30 @@ import { clientStorage } from "@/app/firebase/firebase-client-config";
 import FileSaver from "file-saver";
 
 export const downloadPDF = async () => {
-  const fileRef = ref(clientStorage, "RadiantRecipeGuide.pdf");
-  const downloadURL = await getDownloadURL(fileRef);
-
-  console.log("client url downloadURL", downloadURL);
-
-
   try {
-    const fetchFile = async () => {
-      const response = await fetch(downloadURL);
+    const request = new Request("/api/downloadPdf", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+          Accept: 'application/pdf'
+        },
+        // // @ts-ignore
+        // duplex: 'half' // DIDN'T WORK
+      })
+      const res = await fetch(request)
 
-      console.log("client url response", response);
+      console.log("downloadPDF res", res)
 
+      const blobRes = await res.blob()
 
-      const blob = await response.blob();
-      return blob;
-    };
-    const download = async () => {
-      const blob = await fetchFile();
-      FileSaver.saveAs(blob, "RadiantRecipeGuide.pdf");
-    };
+      console.log("downloadPDF blob client", blobRes)
+      const blob = new Blob([blobRes], { type: 'application/pdf' });
 
-    await download();
+      const blobUrl = window.URL.createObjectURL(blob)
+      const tempLink = document.createElement('a')
+      tempLink.href = blobUrl
+      tempLink.setAttribute('download', "RadiantRecipeGuide.pdf")
+      tempLink.click()
   } catch (error) {
     console.log("downloadPDF error", error);
   }
