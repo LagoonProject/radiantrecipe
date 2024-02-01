@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { NextUIProviderComponent } from "./Components/Providers";
+import { NextUIProvider } from "./Components/Providers";
+import { AppContextProvider } from "./Components/Providers";
 
 import { NavBar } from "./Components/NavBar";
-
 
 import { cookies } from "next/headers";
 
@@ -24,12 +24,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-
-          <NextUIProviderComponent>
+        <AppContextProvider>
+          <NextUIProvider>
             <NavBar />
             {children}
-          </NextUIProviderComponent>
-
+          </NextUIProvider>
+        </AppContextProvider>
       </body>
     </html>
   );

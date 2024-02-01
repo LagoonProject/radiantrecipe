@@ -6,13 +6,15 @@ import { DownloadPDFButton } from "./Components/DownloadPDFButton";
 export default async function Home() {
   const user = await getUser();
 
+  console.log("home")
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <h1 className="text-3xl font-bold my-6">
-        Welcome to the Radiant Recipe!
+        Welcome to Radiant Recipe!
       </h1>
       {!user && <CreateAnAccount />}
-      <DownloadPDFButton />
+      {user && <DownloadPDFButton />}
     </main>
   );
 }

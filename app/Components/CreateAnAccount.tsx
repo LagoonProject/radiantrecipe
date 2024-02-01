@@ -17,7 +17,7 @@ export const CreateAnAccount = () => {
     const submit = async () => {
       setSignInButtonClicked(true);
   
-      const success = await sendMagicEmail(email)
+      await sendMagicEmail(email)
 
       setSignInButtonClicked(false);
   

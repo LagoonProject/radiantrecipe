@@ -1,32 +1,40 @@
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { clientStorage } from "@/app/firebase/firebase-client-config";
 import FileSaver from "file-saver";
+import { Dispatch, SetStateAction } from "react";
+import { TIsPDFDownloaded } from "@/context/context";
 
-export const downloadPDF = async () => {
+export const downloadPDF = async (
+  setIsPDFDownloaded: Dispatch<SetStateAction<TIsPDFDownloaded>>
+) => {
+  const fileRef = ref(clientStorage, "RadiantRecipeGuide.pdf");
+  const downloadURL = await getDownloadURL(fileRef);
+
+  console.log("client url downloadURL", downloadURL);
+
   try {
-    const request = new Request("/api/downloadPdf", {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf',
-          Accept: 'application/pdf'
-        },
-        // // @ts-ignore
-        // duplex: 'half' // DIDN'T WORK
-      })
-      const res = await fetch(request)
+    const fetchFile = async () => {
+      const response = await fetch(downloadURL);
 
-      console.log("downloadPDF res", res)
+      console.log("client url response", response);
 
-      const blobRes = await res.blob()
+      const blob = await response.blob();
+      return blob;
+    };
 
-      console.log("downloadPDF blob client", blobRes)
-      const blob = new Blob([blobRes], { type: 'application/pdf' });
+    const download = async () => {
+      const blob = await fetchFile();
+      FileSaver.saveAs(blob, "RadiantRecipeGuide.pdf");
+    };
 
-      const blobUrl = window.URL.createObjectURL(blob)
-      const tempLink = document.createElement('a')
-      tempLink.href = blobUrl
-      tempLink.setAttribute('download', "RadiantRecipeGuide.pdf")
-      tempLink.click()
+    await download().then(() => {
+      (async () => {
+        const json = await fetch("/api/pdf/pdfDownloaded");
+        const res = await json.json();
+        const pdfDownloaded = res.pdf_guide_downloaded;
+        setIsPDFDownloaded(pdfDownloaded);
+      })();
+    });
   } catch (error) {
     console.log("downloadPDF error", error);
   }

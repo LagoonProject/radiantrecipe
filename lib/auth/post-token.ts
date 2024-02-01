@@ -8,6 +8,8 @@ import { signOut, User } from "firebase/auth";
 //finally refresh the page to get the new session cookie
 export default async function postToken(user : User) {
 
+  console.log("post token")
+
   const router = useRouter();// eslint-disable-line
   const token = await user.getIdToken();
   const res = await fetch("/api/login", {
