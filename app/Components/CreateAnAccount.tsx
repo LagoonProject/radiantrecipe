@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import sendMagicEmail from "@/lib/auth/sendMagicEmail";
-import { Input } from "@nextui-org/react";
-import { Spinner } from "@nextui-org/react";
+import { Input, Spinner } from "@nextui-org/react";
+
 
 
 export const CreateAnAccount = () => {

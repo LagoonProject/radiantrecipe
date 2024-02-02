@@ -21,5 +21,13 @@ model User {
   subsciptionEnds   DateTime?
   recipes           String[]
   pdf_guide_downloaded Boolean? @default(false)
+  weight Decimal? @db.Decimal(6, 3) // Example: allows for a maximum weight of 99.999 kg
+  heightCm Decimal? @db.Decimal(6, 3) 
+  heightFeet Decimal? @db.Decimal(6, 3)
+  heightInches Decimal? @db.Decimal(6, 3) 
+  units String?
+  date_of_birth DateTime?
+  gender String?
+
 }
 
