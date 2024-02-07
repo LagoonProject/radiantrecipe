@@ -8,7 +8,7 @@ export const NavBar = async () => {
   const user = await getUser();
 
   return (
-    <div className="w-full h-12 bg-slate-500 px-6 flex flex-row items-center justify-between">
+    <div className="w-full h-16 bg-zinc-900 px-6 flex flex-row items-center justify-between">
       <Link href="/">
         <p className="font-bold ">Radiant Recipe</p>
       </Link>

@@ -7,7 +7,7 @@ import { signOutUser } from "@/lib/auth/signOut";
 import { useRouter } from "next/navigation";
 
 export interface IAuthButtons {
-  user: DecodedIdToken | null;
+  user: DecodedIdToken | null | undefined;
 }
 
 export const SignInButton = ({ user }: IAuthButtons) => {

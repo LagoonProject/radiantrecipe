@@ -25,3 +25,8 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.pie-value {
+  font-family: arial;
+  font-size: 20px;
+}
