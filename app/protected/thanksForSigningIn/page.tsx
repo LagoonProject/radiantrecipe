@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckIcon } from "../Components/Icons";
+import { CheckIcon } from "../../Components/Icons";
 
 export default function ThanksForSigningIn() {
   return (

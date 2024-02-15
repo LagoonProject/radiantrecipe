@@ -21,7 +21,7 @@ export const CreateAnAccount = () => {
 
       setSignInButtonClicked(false);
   
-      router.push("/thanksForSigningIn");
+      router.push("/protected/thanksForSigningIn");
     };
 
   return (

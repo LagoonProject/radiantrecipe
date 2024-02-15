@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
+import Link from "next/link";
 
 import {
   Table,
@@ -21,10 +22,10 @@ interface IWeightPlans {
   tdee: number;
   iWantTo: string;
   activityLevel: string;
-  caloricGoal:string;
+  caloricGoal: string;
   weightLossEstimateKg: string;
   weightLossEstimatePounds: string;
-  calculation: string
+  calculation: string;
 }
 
 export function WeightPlans({
@@ -34,9 +35,8 @@ export function WeightPlans({
   caloricGoal,
   weightLossEstimateKg,
   weightLossEstimatePounds,
-  calculation
+  calculation,
 }: IWeightPlans) {
-
   const [macroDistributionInGrams, setMacroDistributionInGrams] = useState([
     {
       label: "",
@@ -99,99 +99,41 @@ export function WeightPlans({
 
     setMacroDistributionInGrams(chartData);
   }, [tdee]);
+
   return (
-    <div className="bg-zinc-950 rounded-3xl py-6 my-6 border border-zinc-700">
-      <div className="flex flex-col justify-center items-center ">
-        <div className=" flex flex-col justify-center items-center mb-8">
-          <h2 className="text-3xl font-thin ">
-            I want to <span className="text-3xl font-bold">{iWantTo}</span>
-          </h2>
-          {weightLossEstimateKg.length > 0 && (
-            <h2 className="text-2xl font-thin mt-4">
-              ( ≃ {weightLossEstimateKg}/week or {weightLossEstimatePounds}/week
-              )
+    <Link
+      href={{
+        pathname: "/protected/purchase",
+        query: {
+          tdee: JSON.stringify(tdee),
+          iWantTo,
+        },
+      }}
+    >
+      <div className="flex flex-row justify-center items-center my-4  h-56 ">
+        <div className="bg-zinc-950 hover:bg-zinc-800 rounded-3xl p-4  mx-2 border border-zinc-700 h-56 w-4/5">
+          <div className="flex flex-col justify-center items-center ">
+            <div className=" flex flex-col justify-center items-center mb-8">
+              <h2 className="text-3xl text-center font-thin align-middle">
+                I want to <span className="text-3xl font-bold">{iWantTo}</span>
+              </h2>
+              {weightLossEstimateKg.length > 0 && (
+                <h2 className="text-2xl font-light mt-4">
+                  ( ≃ {weightLossEstimateKg}/week or {weightLossEstimatePounds}
+                  /week )
+                </h2>
+              )}
+            </div>
+            <h2 className="text-xl font-thin mb-4">
+              Your <span className="text-xl font-semibold">{caloricGoal}</span>{" "}
+              ({calculation})
             </h2>
-          )}
-        </div>
-        <h2 className="text-xl font-thin mb-4">
-          Your{" "}
-          <span className="text-xl font-semibold">
-            {caloricGoal}
-          </span>{" "}
-         ({calculation})
-        </h2>
-        <div className="text-4xl font-bold ">
-          {tdee} <span className="text-4xl font-thin ">kcal / day</span>
-        </div>
-      </div>
-      <div className="flex flex-col justify-center items-center my-10 ">
-        <h2 className="text-xl font-thin mb-6">
-          Your{" "}
-          <span className="text-xl font-semibold">
-            Macronutrient Distribution Plan
-          </span>{" "}
-          per day
-        </h2>
-        <div className="flex flex-col justify-center items-center text-2xl  text-white  ">
-          <Table
-            isStriped
-            aria-label="Macronutrient Distribution Plan in % and grams"
-            className="w-3/5 mt-0"
-          >
-            <TableHeader>
-              <TableColumn className="text-blue-400 text-base">
-                Proteins
-              </TableColumn>
-              <TableColumn className="text-yellow-400 text-base">
-                Carbohydrates
-              </TableColumn>
-              <TableColumn className="text-orange-400 text-base">
-                Fats
-              </TableColumn>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="text-blue-300 text-lg">
-                  {truncateNumber(
-                    macroDistributionInGrams[0].macrosPercent * 100
-                  )}
-                  % <span className="text-zinc-400 text-xs">(1)</span>
-                </TableCell>
-                <TableCell className="text-yellow-300 text-lg">
-                  {truncateNumber(
-                    macroDistributionInGrams[1]?.macrosPercent * 100
-                  )}
-                  % <span className="text-zinc-400 text-xs">(1)</span>
-                </TableCell>
-                <TableCell className="text-orange-300 text-lg">
-                  {truncateNumber(
-                    macroDistributionInGrams[2]?.macrosPercent * 100
-                  )}
-                  % <span className="text-zinc-400 text-xs">(1)</span>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="text-blue-300 text-lg">
-                  {macroDistributionInGrams[0].valueText}
-                </TableCell>
-                <TableCell className="text-yellow-300 text-lg">
-                  {macroDistributionInGrams[1]?.valueText}
-                </TableCell>
-                <TableCell className="text-orange-300 text-lg">
-                  {macroDistributionInGrams[2]?.valueText}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          <p className="text-zinc-300 text-xs">
-            (1) percent of daily <span className="font-bold">calories</span>{" "}
-            (kcal)
-          </p>
-          <div className="text-lg">
-            <MacroPie macroDistributionInGrams={macroDistributionInGrams} />
+            <div className="text-4xl font-bold ">
+              {tdee} <span className="text-4xl font-light ">kcal / day</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

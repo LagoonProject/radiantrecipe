@@ -16,8 +16,13 @@ import { RadioGroup, Radio } from "@nextui-org/react";
 import { WeightPlans } from "./WeightPlans";
 
 import { MessageCircleWarning } from "lucide-react";
+import { AppContext } from "@/context/context";
 
 export const CalculateTDEE = () => {
+
+  const {getTdee} = useContext(AppContext)
+  const [tdee, setTdee] = getTdee
+
   // Calculate TDEE
   const [tdeeInfoForm, setTdeeInfoForm] = useState({
     heightCm: "",
@@ -41,7 +46,6 @@ export const CalculateTDEE = () => {
     activityLevel: "",
   });
 
-  const [tdee, setTdee] = useState(0);
 
   // Handler for changing input values
   const handleChange = (
