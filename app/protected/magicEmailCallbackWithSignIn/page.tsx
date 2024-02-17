@@ -13,7 +13,7 @@ import { getMagicEmailFromLocalStorage } from "@/lib/auth/getMagicEmailFromLocal
 export default function MagicEmailCallbackWithSignIn() {
   const [signInWithEmailLink, user, loading, error] =
     useSignInWithEmailLink(clientAuth);
-
+//
   useEffect(() => {
     const email = getMagicEmailFromLocalStorage();
 
