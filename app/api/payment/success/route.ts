@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const user = await getUser();
 
-  console.log("user", user);
+  console.log("success user", user);
 
   const session_id = req.nextUrl.searchParams.get("session_id");
   if (!session_id) {
@@ -33,5 +33,5 @@ export async function GET(req: NextRequest) {
     },
   });
 
-    redirect(`/protected/myMealPlans/${checkoutSession.metadata?.tdee}`);
+    redirect(`/protected/myMealPlans/${checkoutSession.metadata?.tdeeTarget}?iWantTo=${checkoutSession.metadata?.iWantTo}`);
 }

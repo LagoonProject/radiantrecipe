@@ -19,7 +19,7 @@ import { truncateNumber } from "@/lib/helpers/tdeeCalculation";
 import { MacroPie } from "./MacrosPie";
 
 interface IWeightPlans {
-  tdee: number;
+  tdeeTarget: number;
   iWantTo: string;
   activityLevel: string;
   caloricGoal: string;
@@ -29,7 +29,7 @@ interface IWeightPlans {
 }
 
 export function WeightPlans({
-  tdee,
+  tdeeTarget,
   iWantTo,
   activityLevel,
   caloricGoal,
@@ -68,9 +68,9 @@ export function WeightPlans({
     const macrosPercent = getMacroRatiosByActivity(activityLevel);
 
     const macrosInGrams = {
-      proteins: Math.round((tdee * macrosPercent.proteins) / 4),
-      carbohydrates: Math.round((tdee * macrosPercent.carbohydrates) / 4),
-      fats: Math.round((tdee * macrosPercent.fats) / 9),
+      proteins: Math.round((tdeeTarget * macrosPercent.proteins) / 4),
+      carbohydrates: Math.round((tdeeTarget * macrosPercent.carbohydrates) / 4),
+      fats: Math.round((tdeeTarget * macrosPercent.fats) / 9),
     };
 
     const chartData = [
@@ -98,14 +98,14 @@ export function WeightPlans({
     ];
 
     setMacroDistributionInGrams(chartData);
-  }, [tdee]);
+  }, [tdeeTarget]);
 
   return (
     <Link
       href={{
         pathname: "/protected/purchase",
         query: {
-          tdee: JSON.stringify(tdee),
+          tdeeTarget: JSON.stringify(tdeeTarget),
           iWantTo,
         },
       }}
@@ -129,7 +129,7 @@ export function WeightPlans({
               ({calculation})
             </h2>
             <div className="text-4xl font-bold ">
-              {tdee} <span className="text-4xl font-light ">kcal / day</span>
+              {tdeeTarget} <span className="text-4xl font-light ">kcal / day</span>
             </div>
           </div>
         </div>

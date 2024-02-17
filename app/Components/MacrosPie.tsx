@@ -24,8 +24,8 @@ export function MacroPie({
   };
 
   return (
-    <div className="">
-      <PieChart width={900} height={200}>
+    <div className="mt-4 pb-8">
+      <PieChart width={900} height={150}>
         <Pie
           data={macroDistributionInGrams}
           dataKey="value"

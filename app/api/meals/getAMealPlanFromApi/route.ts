@@ -2,11 +2,11 @@ import getUser from "@/lib/auth/get-user";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/prisma";
 import { X } from "lucide-react";
-import { IMealPlan } from "@/app/protected/myMealPlans/[tdee]/page";
+
 // ingredients list must be separated by commmas
 
 export async function POST(request: NextRequest) {
-  const { tdee } = await request.json();
+  const { tdeeTarget } = await request.json();
 
   // connect user to API
   // post to https://api.spoonacular.com/users/connect
@@ -15,60 +15,33 @@ export async function POST(request: NextRequest) {
 
   console.log("POST spoon getUser", user);
 
-  const CONNECT_URL = `https://api.spoonacular.com/mealplanner/generate?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&timeframe=week&targetCalories=${tdee}`;
+  const CONNECT_URL = `https://api.spoonacular.com/mealplanner/generate?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&timeframe=week&targetCalories=${tdeeTarget}`;
 
-  const body = {
-    userId: user?.user_id,
-    email: user?.email,
-  };
+
 
   try {
-    // const res = await fetch(CONNECT_URL);
+    // get meal plan from spoonacular
 
-    //   const apiCredentials = await res.json()
-    //   console.log("apiCredentials", apiCredentials);
-
-    // const updatedUser = await prisma.user.update({
-    //   where: {
-    //     id: user?.user_id,
-    //   },
-    //   data: {
-    //     spoonacularUsername: apiCredentials.username,
-    //     spoonacularPassword: apiCredentials.spoonacularPassword,
-    //     spoonacularHash: apiCredentials.hash,
-    //   },
-    // });
+    const res = await fetch(CONNECT_URL);
 
     const mealPlan = await res.json();
-    console.log("meal plan", mealPlan);
 
-    const previousMealPlansJson = await prisma.user.findUnique({
-      where: {
-        id: user?.user_id,
-      },
-      select: {
-        mealPlans: true,
+    console.log("POST mealPlan", mealPlan)
+  
+    // store the meal plan in the database
+
+    const newMealPlan = await prisma.mealPlans.create({
+      data: {
+        weightGoal: tdeeTarget,
+        mealPlan: mealPlan,
+        userId: user?.user_id,
       },
     });
 
-    let mealPlans;
+    console.log("newMealPlan", newMealPlan)
+  
 
-    if (previousMealPlansJson && previousMealPlansJson.mealPlans) {
-      const previousMealPlans =
-        previousMealPlansJson.mealPlans as unknown as IMealPlan[];
-      previousMealPlans
-        ? (mealPlans = [...previousMealPlans, mealPlan])
-        : (mealPlans = [mealPlan]);
-    }
-
-    await prisma.user.update({
-      where: {
-        id: user?.user_id,
-      },
-      data: { mealPlans },
-    });
-
-    return NextResponse.json(mealPlan);
+    return NextResponse.json(newMealPlan);
   } catch (error: any) {
     console.log("error fetching api", error.code);
     return NextResponse.json(error.code);

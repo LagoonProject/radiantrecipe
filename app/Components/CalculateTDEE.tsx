@@ -7,6 +7,7 @@ import { Button } from "@nextui-org/react";
 
 import {
   calculateAge,
+  calculateTDEE,
   convertHeightToInches,
   truncateNumber,
 } from "../../lib/helpers/tdeeCalculation";
@@ -19,9 +20,8 @@ import { MessageCircleWarning } from "lucide-react";
 import { AppContext } from "@/context/context";
 
 export const CalculateTDEE = () => {
-
-  const {getTdee} = useContext(AppContext)
-  const [tdee, setTdee] = getTdee
+  const { getTdee } = useContext(AppContext);
+  const [tdee, setTdee] = getTdee;
 
   // Calculate TDEE
   const [tdeeInfoForm, setTdeeInfoForm] = useState({
@@ -45,7 +45,6 @@ export const CalculateTDEE = () => {
     units: "international",
     activityLevel: "",
   });
-
 
   // Handler for changing input values
   const handleChange = (
@@ -93,24 +92,6 @@ export const CalculateTDEE = () => {
     await getTdeeInfoFromDb();
   };
 
-  // activity BMR multiplier for TDEE
-  function getActivityMultiplier(activityLevel: string) {
-    switch (activityLevel) {
-      case "sedentary":
-        return 1.2; // Sedentary (BMR × 1.2)
-      case "lightly":
-        return 1.375; // Lightly Active (BMR × 1.375)
-      case "moderately":
-        return 1.55; // Moderately Active (BMR × 1.55)
-      case "very":
-        return 1.725; // Very Active (BMR × 1.725)
-      case "extra":
-        return 1.9; // Extra Active (BMR × 1.9)
-      default:
-        return 1;
-    }
-  }
-
   useEffect(() => {
     console.log("useEffect");
     (async () => {
@@ -118,81 +99,12 @@ export const CalculateTDEE = () => {
     })();
   }, []);
 
-  const userAge = calculateAge(tdeeInfo.date_of_birth);
-
-  const userInchesHeight = convertHeightToInches(
-    tdeeInfo.heightFeet,
-    tdeeInfo.heightInches
-  );
-
-  const tdeeMutiplier = getActivityMultiplier(tdeeInfo.activityLevel);
+  // activity BMR multiplier for TDEE
 
   // BMR formulas
 
-  function internationalBMRFormula() {
-    // kilos
-    // For woman : BMR=10×weight in kg+6.25×height in cm−5×age in years−161
-    // For man : BMR=10×weight in kg+6.25×height in cm−5×age in years+5
-
-    if (tdeeInfo.gender === "female" && tdeeInfo.heightCm.length > 0) {
-      const bmrCalc =
-        10 * parseFloat(tdeeInfo.weight) +
-        6.25 * parseFloat(tdeeInfo.heightCm) -
-        5 * userAge -
-        161;
-
-      const tdee = bmrCalc * tdeeMutiplier;
-
-      setTdee(Math.round(tdee));
-    } else if (tdeeInfo.gender === "male" && tdeeInfo.heightCm.length > 0) {
-      const bmrCalc =
-        10 * parseFloat(tdeeInfo.weight) +
-        6.25 * parseFloat(tdeeInfo.heightCm) -
-        5 * userAge +
-        5;
-
-      console.log("tdeeCalc", bmrCalc);
-
-      const tdee = bmrCalc * tdeeMutiplier;
-
-      setTdee(Math.round(tdee));
-    }
-  }
-
-  function americanBMRFormula() {
-    //pounds
-    // For woman : BMR=655.1+(4.35×weight in pounds)+(4.7×height in inches)−(4.7×age in years)
-    // For Men: BMR=66.5+(6.23×weight in pounds)+(12.7×height in inches)−(6.8×age in years)
-
-    if (tdeeInfo.gender === "female") {
-      const bmrCalc =
-        655.1 +
-        4.35 * parseFloat(tdeeInfo.weight) +
-        4.7 * userInchesHeight -
-        4.7 * userAge;
-
-      const tdee = bmrCalc * tdeeMutiplier;
-
-      setTdee(tdee);
-    } else if (tdeeInfo.gender === "male") {
-      const bmrCalc =
-        66.5 +
-        6.23 * parseFloat(tdeeInfo.weight) +
-        12.7 * userInchesHeight -
-        6.8 * userAge;
-
-      const tdee = bmrCalc * tdeeMutiplier;
-
-      setTdee(tdee);
-    }
-  }
-
   useEffect(() => {
-    if (tdeeInfo.units === "international") {
-      internationalBMRFormula();
-    } else if (tdeeInfo.units === "american") {
-      americanBMRFormula();
-    }
+    calculateTDEE(tdeeInfo, setTdee);
   }, [tdeeInfo]);
 
   const resultsRef = useRef<any>(null);
@@ -247,9 +159,10 @@ export const CalculateTDEE = () => {
         <div className="p-4  mb-4 ">
           <p className="text-xl text-zinc-200">
             Creating a caloric deficit by consuming less than your TDEE is the
-            foundational principle of weight loss. Keep in mind that it&apos;s also
-            important to approach this process mindfully, focusing on health and
-            sustainable habits rather than just the numbers on the scale.
+            foundational principle of weight loss. Keep in mind that it&apos;s
+            also important to approach this process mindfully, focusing on
+            health and sustainable habits rather than just the numbers on the
+            scale.
           </p>
         </div>
         <div className="bg-zinc-800 p-4  mb-10 flex flex-row ">
@@ -477,7 +390,7 @@ export const CalculateTDEE = () => {
         </div>
 
         <WeightPlans
-          tdee={tdee - 500}
+          tdeeTarget={tdee - 500}
           iWantTo={"lose weight in a sustainable way"}
           activityLevel={tdeeInfo.activityLevel}
           caloricGoal={"Daily Caloric Goal"}
@@ -486,7 +399,7 @@ export const CalculateTDEE = () => {
           calculation={"TDEE - 500 kcal"}
         />
         <WeightPlans
-          tdee={tdee - 1000}
+          tdeeTarget={tdee - 1000}
           iWantTo={"lose weight fast"}
           activityLevel={tdeeInfo.activityLevel}
           caloricGoal={"Daily Caloric Goal"}
@@ -495,7 +408,7 @@ export const CalculateTDEE = () => {
           calculation={"TDEE - 1000 kcal"}
         />
         <WeightPlans
-          tdee={tdee}
+          tdeeTarget={tdee}
           iWantTo={"maintain weight"}
           activityLevel={tdeeInfo.activityLevel}
           caloricGoal={"Daily Caloric Goal"}

@@ -19,7 +19,7 @@ export const DownloadPDFButton = () => {
 
   useEffect(() => {
     (async () => {
-      const json = await fetch("api/getUserFromDb");
+      const json = await fetch("/api/getUserFromDb");
       const res = await json.json();
       console.log("useEffect res ", res)
       setIsPDFDownloaded(res.pdf_guide_downloaded);

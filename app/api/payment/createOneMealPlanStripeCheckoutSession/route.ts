@@ -9,10 +9,9 @@ import getUser from "@/lib/auth/get-user";
 export async function POST(req: NextRequest) {
   console.log("createOneMealPlanStripeCheckoutSession");
 
-  const { tdee } = await req.json();
+  const { tdeeTarget, iWantTo } = await req.json();
 
-  console.log("createOneMealPlanStripeCheckoutSession tdee", tdee);
-
+  console.log("createOneMealPlanStripeCheckoutSession tdeeTarget", tdeeTarget);
 
   const user = await getUser();
 
@@ -29,7 +28,8 @@ export async function POST(req: NextRequest) {
 
     metadata: {
       userId: user?.user_id as string,
-      tdee,
+      tdeeTarget,
+      iWantTo,
     },
 
     mode: "payment",

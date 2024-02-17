@@ -29,11 +29,18 @@ model User {
   date_of_birth     DateTime?
   gender            String?
   activityLevel     String?
-  tdee              Json?
   spoonacularUsername String?
   spoonacularPassword String?
   spoonacularHash     String?
-  mealPlans          Json?
-
+  mealPlans           MealPlans[] // Establishes a one-to-many relationship with MealPlans
 }
  
+model MealPlans {
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  weightGoal        Decimal?
+  mealPlan          Json?
+  userId            String    // Links to the User model
+  user              User      @relation(fields: [userId], references: [id]) // Defines the relationship
+}

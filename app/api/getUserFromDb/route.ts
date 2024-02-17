@@ -8,7 +8,7 @@ import { getUserFromDb } from "../actions/getUserFromDb";
 export async function GET() {
   const user = await getUser();
 
-  console.log("pdfDownloaded user ", user);
+  console.log("getUser from db route user ", user);
 
   if (!user) {
     throw new Error("Not authenticated");

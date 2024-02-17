@@ -6,22 +6,14 @@ import { useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe/stripe";
+import { getWeightGoal } from "@/lib/helpers/getWeightGoal";
 
 export default function Purchase({ searchParams }: any) {
-  const { tdee, iWantTo } = searchParams;
+  const { tdeeTarget, iWantTo } = searchParams;
 
-  function getWeightGoal() {
-    switch (iWantTo) {
-      case "maintain weight":
-        return ""; // Sedentary (BMR × 1.2)
-      case "lose weight fast":
-        return "0.9kg (2 pounds)"; // Lightly Active (BMR × 1.375)
-      case "lose weight in a sustainable way":
-        return "0.45kg (1 pound)"; // Moderately Active (BMR × 1.55)
-    }
-  }
 
-  const weightGoal = getWeightGoal();
+
+  const weightGoal = getWeightGoal(iWantTo);
 
   async function createOneMealPlanStripeSession() {
     console.log("createOneMealPlan");
@@ -33,7 +25,7 @@ export default function Purchase({ searchParams }: any) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tdee }), // body data type must match "Content-Type" header
+        body: JSON.stringify({ tdeeTarget, iWantTo }), // body data type must match "Content-Type" header
       }
     );
 
@@ -53,14 +45,14 @@ export default function Purchase({ searchParams }: any) {
           <div className="w-full flex flex-col items-center justify-center my-8">
             <h2 className="font-normal text-2xl my-2">
               Achieve your goal of{" "}
-              <span className="font-bold">{tdee} Calories Per Day</span>
+              <span className="font-bold">{tdeeTarget} Calories Per Day</span>
             </h2>
             <h2 className="font-normal text-4xl  mt-2 mb-8">
               <span className="font-bold">Lose {weightGoal}</span> per week!
             </h2>
           </div>
           <h2 className="font-normal text-2xl  my-2 leading-relaxed">
-            Knowing exactly what to eat to consume precisely {tdee} calories
+            Knowing exactly what to eat to consume precisely {tdeeTarget} calories
             each day can be challenging.
           </h2>
           <h2 className="font-normal text-2xl mt-2 mb-12 leading-relaxed">
@@ -68,7 +60,7 @@ export default function Purchase({ searchParams }: any) {
             <span className="font-bold">Personalized Weekly Meal Plan</span>.
             This plan is meticulously crafted to meet your daily caloric needs,
             providing you with exactly{" "}
-            <span className="font-bold">{tdee} calories per day</span> for a
+            <span className="font-bold">{tdeeTarget} calories per day</span> for a
             week, assisting you in losing 0.45 kg (1 pound) every week.
           </h2>
 
@@ -84,7 +76,7 @@ export default function Purchase({ searchParams }: any) {
             support your weight loss journey.
           </h3>
           <h2 className="font-bold text-xl my-2">
-            Will I Really Consume My Goal of {tdee} Calories Per Day by
+            Will I Really Consume My Goal of {tdeeTarget} Calories Per Day by
             Following These Recipes?
           </h2>
           <h3 className="font-normal text-lg mt-2 mb-6 leading-relaxed">
