@@ -41,6 +41,7 @@ model MealPlans {
   updatedAt         DateTime  @updatedAt
   weightGoal        Decimal?
   mealPlan          Json?
+  recipes           Json?
   userId            String    // Links to the User model
   user              User      @relation(fields: [userId], references: [id]) // Defines the relationship
 }

@@ -2,8 +2,21 @@ import getUser from "@/lib/auth/get-user";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/prisma";
 import { X } from "lucide-react";
+import { MealPlan } from "@/app/protected/myMealPlans/[tdeeTarget]/page";
 
 // ingredients list must be separated by commmas
+
+const extractMealIds = (mealPlan: MealPlan): number[] => {
+  const mealIds: number[] = [];
+
+  Object.values(mealPlan.week).forEach((dailyMeals) => {
+    dailyMeals.meals.forEach((meal) => {
+      mealIds.push(meal.id);
+    });
+  });
+
+  return mealIds;
+};
 
 export async function POST(request: NextRequest) {
   const { tdeeTarget } = await request.json();
@@ -15,19 +28,31 @@ export async function POST(request: NextRequest) {
 
   console.log("POST spoon getUser", user);
 
-  const CONNECT_URL = `https://api.spoonacular.com/mealplanner/generate?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&timeframe=week&targetCalories=${tdeeTarget}`;
-
-
+  const MEALPLAN_URL = `https://api.spoonacular.com/mealplanner/generate?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&timeframe=week&targetCalories=${tdeeTarget}`;
 
   try {
     // get meal plan from spoonacular
 
-    const res = await fetch(CONNECT_URL);
+    const res = await fetch(MEALPLAN_URL);
 
     const mealPlan = await res.json();
 
-    console.log("POST mealPlan", mealPlan)
-  
+    console.log("POST mealPlan", mealPlan);
+
+    const recipeIds = extractMealIds(mealPlan);
+
+    console.log("POST recipeIds", recipeIds);
+
+    const RECIPES_URL = `https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&ids=${recipeIds}`;
+
+    console.log("POST RECIPES_URL", RECIPES_URL);
+
+    const resRecipes = await fetch(RECIPES_URL);
+
+    const recipes = await resRecipes.json();
+
+    // console.log("POST recipes", recipes);
+
     // store the meal plan in the database
 
     const newMealPlan = await prisma.mealPlans.create({
@@ -35,11 +60,11 @@ export async function POST(request: NextRequest) {
         weightGoal: tdeeTarget,
         mealPlan: mealPlan,
         userId: user?.user_id,
+        recipes: recipes,
       },
     });
 
-    console.log("newMealPlan", newMealPlan)
-  
+    console.log("newMealPlan", newMealPlan);
 
     return NextResponse.json(newMealPlan);
   } catch (error: any) {

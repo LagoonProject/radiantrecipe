@@ -9,12 +9,14 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  getKeyValue,
 } from "@nextui-org/react";
 import { MacroPie } from "@/app/Components/MacrosPie";
 import { getWeightGoal } from "@/lib/helpers/getWeightGoal";
 import { MyInfos } from "@/app/Components/MyInfos";
+import { AppContext } from "@/context/context";
 
-interface Meal {
+export interface Meal {
   id: number;
   title: string;
   servings: number;
@@ -23,7 +25,7 @@ interface Meal {
   readyInMinutes: number;
 }
 
-interface DailyMeals {
+export interface DailyMeals {
   meals: Meal[];
   nutrients: {
     fat: number;
@@ -33,20 +35,21 @@ interface DailyMeals {
   };
 }
 
-interface Week {
+export interface Week {
   [key: string]: DailyMeals; // Dynamically define the days of the week
 }
 
-interface MealPlan {
+export interface MealPlan {
   week: Week;
 }
 
-interface MealPlanResponse {
+export interface MealPlanResponse {
   id: number;
   createdAt: string;
   updatedAt: string;
   weightGoal: string;
   mealPlan: MealPlan;
+  recipes:Recipe[];
   userId: string;
 }
 
@@ -54,17 +57,17 @@ export default function MyMealPlan({ searchParams }: any) {
   const { tdeeTarget } = useParams();
   const { iWantTo } = searchParams;
 
-  console.log("searchParams mealPlans", iWantTo);
+  const { getMealPlans, getRecipe } = useContext(AppContext);
+  const [mealPlans, setMealPlans] = getMealPlans;
+  const [recipe, setRecipe] = getRecipe;
 
-  const [mealPlans, setMealPlans] = useState<MealPlanResponse[] | [] | null>(
-    null
-  );
+  console.log("searchParams mealPlans", iWantTo);
 
   const weightLossGoal = getWeightGoal(iWantTo);
 
   useEffect(() => {
-    if (!mealPlans) {
-      fetch("/api/meals/getMealPlansFromForTheUser").then((result) => {
+    if (!mealPlans || mealPlans.length === 0) {
+      fetch("/api/meals/getMealPlansFromDb").then((result) => {
         (async () => {
           const res = await result.json();
 
@@ -96,17 +99,42 @@ export default function MyMealPlan({ searchParams }: any) {
 
   console.log("MyMealPlans", mealPlans);
 
-  if (mealPlans) {
+  function handleClickRow(recipeId: string) {
+    console.log("recipeId", typeof recipeId);
+
+    if (mealPlans) {
+      for (const mealPlan of mealPlans) {
+
+          const recipes = mealPlan.recipes
+
+
+          const foundRecipe = recipes.find((meal) => meal.id === parseInt(recipeId));
+     
+
+          if (foundRecipe) {
+            console.log("foundMeal", foundRecipe);
+            setRecipe(foundRecipe)
+          }
+     
+      }
+      return null;
+    }
+  }
+
+  if (mealPlans && mealPlans.length > 0) {
     return (
       <main className=" min-h-screen flex flex-col items-center justify-center">
-        <div className="xl:absolute top-16 left-0  p-4 m-2 border rounded-2xl"><MyInfos /></div>
+        <div className="xl:absolute top-16 left-0  p-4 m-2 border rounded-2xl">
+          <MyInfos />
+        </div>
         <div className="container   flex flex-col items-center justify-center py-12 ">
           <h2 className=" text-3xl font-thin my-2">
             My <span className=" font-bold   ">Personalized Meal Plan</span> for{" "}
             <span className=" font-bold   ">{tdeeTarget} calories</span> a day
           </h2>
           <h3 className=" text-2xl font-thin my-4">
-            to lose <span className=" font-bold   ">{weightLossGoal}</span> per week
+            to lose <span className=" font-bold   ">{weightLossGoal}</span> per
+            week
           </h3>
           {mealPlans.map((e) => {
             return Object.entries(e.mealPlan.week).map(
@@ -151,16 +179,33 @@ export default function MyMealPlan({ searchParams }: any) {
                         className="w-5/6"
                         isStriped
                         aria-label="My Personalized Meal Plan"
+                        onRowAction={(key) => handleClickRow(key as string)}
                       >
                         <TableHeader>
-                          <TableColumn align="center"><div className="flex items-center justify-center">MEAL</div></TableColumn>
-                          <TableColumn align="center"><div className="flex items-center justify-center">TITLE</div></TableColumn>
-                          <TableColumn align="center"><div className="flex items-center justify-center">READY IN</div></TableColumn>
-                          <TableColumn align="center"><div className="flex items-center justify-center">SERVINGS</div></TableColumn>
+                          <TableColumn align="center">
+                            <div className="flex items-center justify-center">
+                              MEAL
+                            </div>
+                          </TableColumn>
+                          <TableColumn align="center">
+                            <div className="flex items-center justify-center">
+                              TITLE
+                            </div>
+                          </TableColumn>
+                          <TableColumn align="center">
+                            <div className="flex items-center justify-center">
+                              READY IN
+                            </div>
+                          </TableColumn>
+                          <TableColumn align="center">
+                            <div className="flex items-center justify-center">
+                              SERVINGS
+                            </div>
+                          </TableColumn>
                         </TableHeader>
                         <TableBody>
                           {dailyMeals.meals.map((meal, i) => (
-                            <TableRow  key={meal.title}>
+                            <TableRow key={meal.id}>
                               <TableCell>
                                 {i === 0
                                   ? "BEAKFAST"
@@ -169,8 +214,16 @@ export default function MyMealPlan({ searchParams }: any) {
                                   : "DINNER"}
                               </TableCell>
                               <TableCell>{meal.title}</TableCell>
-                              <TableCell ><div className="flex items-center justify-center">{meal.readyInMinutes}</div></TableCell>
-                              <TableCell><div className="flex items-center justify-center">{meal.servings}</div></TableCell>
+                              <TableCell>
+                                <div className="flex items-center justify-center">
+                                  {meal.readyInMinutes}min
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center justify-center">
+                                  {meal.servings}
+                                </div>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
