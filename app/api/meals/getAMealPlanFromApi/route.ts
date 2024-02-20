@@ -1,7 +1,7 @@
 import getUser from "@/lib/auth/get-user";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/prisma";
-import { X } from "lucide-react";
+
 import { MealPlan } from "@/app/protected/myMealPlans/[tdeeTarget]/page";
 
 // ingredients list must be separated by commmas
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     console.log("POST recipeIds", recipeIds);
 
-    const RECIPES_URL = `https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&ids=${recipeIds}`;
+    const RECIPES_URL = `https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY}&ids=${recipeIds}&includeNutrition=true`;
 
     console.log("POST RECIPES_URL", RECIPES_URL);
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     const newMealPlan = await prisma.mealPlans.create({
       data: {
-        weightGoal: tdeeTarget,
+        caloriesGoal: tdeeTarget,
         mealPlan: mealPlan,
         userId: user?.user_id,
         recipes: recipes,
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newMealPlan);
   } catch (error: any) {
-    console.log("error fetching api", error.code);
+    console.log("error fetching api", error);
     return NextResponse.json(error.code);
   }
 }

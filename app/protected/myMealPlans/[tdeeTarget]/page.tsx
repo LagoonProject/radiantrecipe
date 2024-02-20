@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Table,
   TableHeader,
@@ -47,9 +47,9 @@ export interface MealPlanResponse {
   id: number;
   createdAt: string;
   updatedAt: string;
-  weightGoal: string;
+  caloriesGoal: string;
   mealPlan: MealPlan;
-  recipes:Recipe[];
+  recipes: Recipe[];
   userId: string;
 }
 
@@ -57,9 +57,11 @@ export default function MyMealPlan({ searchParams }: any) {
   const { tdeeTarget } = useParams();
   const { iWantTo } = searchParams;
 
-  const { getMealPlans, getRecipe } = useContext(AppContext);
+  const { getMealPlans } = useContext(AppContext);
   const [mealPlans, setMealPlans] = getMealPlans;
-  const [recipe, setRecipe] = getRecipe;
+
+
+  const router = useRouter();
 
   console.log("searchParams mealPlans", iWantTo);
 
@@ -67,6 +69,8 @@ export default function MyMealPlan({ searchParams }: any) {
 
   useEffect(() => {
     if (!mealPlans || mealPlans.length === 0) {
+
+      
       fetch("/api/meals/getMealPlansFromDb").then((result) => {
         (async () => {
           const res = await result.json();
@@ -86,7 +90,7 @@ export default function MyMealPlan({ searchParams }: any) {
 
                 console.log("/api/meals/getAMealPlanFromApi", res);
 
-                setMealPlans(res);
+                setMealPlans([res]);
               })();
             });
           } else {
@@ -100,25 +104,7 @@ export default function MyMealPlan({ searchParams }: any) {
   console.log("MyMealPlans", mealPlans);
 
   function handleClickRow(recipeId: string) {
-    console.log("recipeId", typeof recipeId);
-
-    if (mealPlans) {
-      for (const mealPlan of mealPlans) {
-
-          const recipes = mealPlan.recipes
-
-
-          const foundRecipe = recipes.find((meal) => meal.id === parseInt(recipeId));
-     
-
-          if (foundRecipe) {
-            console.log("foundMeal", foundRecipe);
-            setRecipe(foundRecipe)
-          }
-     
-      }
-      return null;
-    }
+    router.push(`/protected/recipe/${recipeId}`);
   }
 
   if (mealPlans && mealPlans.length > 0) {

@@ -1,7 +1,7 @@
 import getUser from "@/lib/auth/get-user";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/prisma";
-import { X } from "lucide-react";
+
 
 // ingredients list must be separated by commmas
 

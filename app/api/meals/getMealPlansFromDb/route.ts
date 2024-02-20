@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(mealPlans);
   } catch (error: any) {
-    console.log("error fetching api", error.code);
+    console.log("error fetching db", error);
     return NextResponse.json(error.code);
   }
 }
