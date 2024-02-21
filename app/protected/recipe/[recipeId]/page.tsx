@@ -5,14 +5,16 @@ import { MyInfos } from "@/app/Components/MyInfos";
 import { AppContext } from "@/context/context";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+
 import {
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
-  TableRow,
+  TableCaption,
   TableCell,
-} from "@nextui-org/react";
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 import { WheatOff, MilkOff, LeafyGreen, Clock } from "lucide-react";
 import { decimalToFraction } from "@/lib/helpers/decimalToFraction";
@@ -3099,16 +3101,17 @@ export default function Recipe({ searchParams }: any) {
               </Tabs>
             </div>
             <div className="flex flex-row justify-center items-center space-x-8 w-full">
-              <Table
-                hideHeader
-                isStriped
-                aria-label="Ingredients table"
-                className="w-4/6"
-              >
+              <Table className="w-4/6">
+                <TableCaption>
+                  A list of ingredients for the recipe.
+                </TableCaption>
+
                 <TableHeader>
-                  <TableColumn>Image</TableColumn>
-                  <TableColumn>Quantity</TableColumn>
-                  <TableColumn>Ingredient</TableColumn>
+                  <TableRow>
+                    <TableHead>Image</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Ingredient</TableHead>
+                  </TableRow>
                 </TableHeader>
                 <TableBody>
                   {recipe.extendedIngredients.map((e) => {
@@ -3138,16 +3141,13 @@ export default function Recipe({ searchParams }: any) {
               </Table>
               <div className="w-2/6 flex flex-col justify-center items-center ">
                 <h3>Abbreviations</h3>
-                <Table
-                  hideHeader
-                  // isStriped
-                  aria-label="Ingredients table"
-                  className="text-xs"
-                >
-                  <TableHeader>
-                    <TableColumn>Abbreviation</TableColumn>
-                    <TableColumn>Full word</TableColumn>
-                  </TableHeader>
+                <Table className="text-xs">
+                  <TableRow>
+                    <TableHeader>
+                      <TableHead>Abbreviation</TableHead>
+                      <TableHead>Full word</TableHead>
+                    </TableHeader>
+                  </TableRow>
                   <TableBody>
                     {abbreviations.map((e) => {
                       return (
@@ -3266,16 +3266,15 @@ export default function Recipe({ searchParams }: any) {
             <h2 className="font-bold  border-b-1 py-4 text-xl my-4 w-full">
               Nutrition
             </h2>
-            <Table
-              hideHeader
-              // isStriped
-              aria-label="Ingredients table"
-              className="text-xs"
-            >
+            <Table className="text-xs">
               <TableHeader>
-                <TableColumn ><div className="w-10">Nutrient</div></TableColumn>
-                <TableColumn maxWidth={10}>Quantity</TableColumn>
-                <TableColumn maxWidth={20}>Percent</TableColumn>
+                <TableRow>
+                  <TableHead>
+                    <div className="w-10">Nutrient</div>
+                  </TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Percent</TableHead>
+                </TableRow>
               </TableHeader>
               <TableBody>
                 {recipe.nutrition.nutrients.map((e, i) => {
@@ -3287,7 +3286,6 @@ export default function Recipe({ searchParams }: any) {
                         {e.unit}
                       </TableCell>
                       <TableCell>
-                        {" "}
                         <div className="flex flex-col gap-6 w-full max-w-md">
                           <Progress
                             size="md"

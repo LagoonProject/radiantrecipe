@@ -1,13 +1,16 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
+const { fontFamily } = require("tailwindcss/defaultTheme");
+const { nextui } = require("@nextui-org/react");
 
 const config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    "./@/**/*.{ts,tsx}", // <- HERE
+  ],
   prefix: "",
   theme: {
     container: {
@@ -18,6 +21,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -74,7 +80,15 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config
+  plugins: [
+    require("tailwindcss-animate"),
+    nextui({
+      prefix: "nextui", // prefix for themes variables
+      addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
+      defaultTheme: "dark", // default theme from the themes object
+      defaultExtendTheme: "dark", // default theme to extend on custom themes
+    }),
+  ],
+} satisfies Config;
 
-export default config
+export default config;
