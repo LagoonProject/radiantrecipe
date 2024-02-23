@@ -35,7 +35,7 @@ export const DownloadPDFButton = () => {
           </p>
 
           <button
-            className="text-xl font-semibold py-4 px-6 m-4 bg-slate-700 w-2/6 rounded-2xl"
+            className="text-xl font-semibold py-4 px-6 m-4 bg-primary w-2/6 rounded-2xl"
             disabled={signInButtonClicked}
             onClick={() => downloadPDF(setIsPDFDownloaded)}
           >

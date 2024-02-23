@@ -60,7 +60,6 @@ export default function MyMealPlan({ searchParams }: any) {
   const { getMealPlans } = useContext(AppContext);
   const [mealPlans, setMealPlans] = getMealPlans;
 
-
   const router = useRouter();
 
   console.log("searchParams mealPlans", iWantTo);
@@ -69,8 +68,6 @@ export default function MyMealPlan({ searchParams }: any) {
 
   useEffect(() => {
     if (!mealPlans || mealPlans.length === 0) {
-
-      
       fetch("/api/meals/getMealPlansFromDb").then((result) => {
         (async () => {
           const res = await result.json();
@@ -114,11 +111,11 @@ export default function MyMealPlan({ searchParams }: any) {
           <MyInfos />
         </div>
         <div className="container   flex flex-col items-center justify-center py-12 ">
-          <h2 className=" text-3xl font-thin my-2">
+          <h2 className=" text-3xl font-light my-2">
             My <span className=" font-bold   ">Personalized Meal Plan</span> for{" "}
             <span className=" font-bold   ">{tdeeTarget} calories</span> a day
           </h2>
-          <h3 className=" text-2xl font-thin my-4">
+          <h3 className=" text-2xl font-light my-4">
             to lose <span className=" font-bold   ">{weightLossGoal}</span> per
             week
           </h3>
@@ -154,7 +151,10 @@ export default function MyMealPlan({ searchParams }: any) {
 
                     <p className="my-4 text-xl font-bold ">
                       {dailyMeals.nutrients.calories}
-                      <span className="my-4 text-lg font-thin "> calories</span>
+                      <span className="my-4 text-lg font-light ">
+                        {" "}
+                        calories
+                      </span>
                     </p>
                     <MacroPie
                       macroDistributionInGrams={macroDistributionInGrams}

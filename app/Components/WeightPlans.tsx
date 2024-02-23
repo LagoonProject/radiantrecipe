@@ -111,10 +111,10 @@ export function WeightPlans({
       }}
     >
       <div className="flex flex-row justify-center items-center my-4  h-56 ">
-        <div className="bg-zinc-950 hover:bg-zinc-800 rounded-3xl p-4  mx-2 border border-zinc-700 h-56 w-4/5">
+        <div className="bg-zinc-900 hover:bg-zinc-800 rounded-3xl p-4  mx-2 border border-zinc-700 h-56 w-4/5">
           <div className="flex flex-col justify-center items-center ">
             <div className=" flex flex-col justify-center items-center mb-8">
-              <h2 className="text-3xl text-center font-thin align-middle">
+              <h2 className="text-3xl text-center font-light align-middle">
                 I want to <span className="text-3xl font-bold">{iWantTo}</span>
               </h2>
               {weightLossEstimateKg.length > 0 && (
@@ -124,12 +124,13 @@ export function WeightPlans({
                 </h2>
               )}
             </div>
-            <h2 className="text-xl font-thin mb-4">
+            <h2 className="text-xl font-light mb-4">
               Your <span className="text-xl font-semibold">{caloricGoal}</span>{" "}
               ({calculation})
             </h2>
             <div className="text-4xl font-bold ">
-              {tdeeTarget} <span className="text-4xl font-light ">kcal / day</span>
+              {tdeeTarget}{" "}
+              <span className="text-4xl font-light ">kcal / day</span>
             </div>
           </div>
         </div>

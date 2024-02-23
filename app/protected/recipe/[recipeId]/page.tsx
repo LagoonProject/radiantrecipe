@@ -16,13 +16,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { WheatOff, MilkOff, LeafyGreen, Clock } from "lucide-react";
 import { decimalToFraction } from "@/lib/helpers/decimalToFraction";
-import { Tabs, Tab, Card, CardBody, CardHeader } from "@nextui-org/react";
 
 import { Link } from "@nextui-org/react";
 import { extractListItems } from "@/lib/helpers/extractListItems";
-import { Progress } from "@nextui-org/react";
+import { Progress } from "@/components/ui/progress";
 
 const recip = {
   id: 653270,
@@ -2985,7 +2986,11 @@ export default function Recipe({ searchParams }: any) {
   const IMAGE_BASE_URL_EQUIPMENTS =
     "https://spoonacular.com/cdn/equipment_100x100/";
 
-  const preparation = extractListItems(recipe?.instructions!);
+  let preparation;
+
+  if (recipe) {
+    preparation = extractListItems(recipe?.instructions!);
+  }
 
   let equipments: Equipment[] = [];
   recipe?.analyzedInstructions
@@ -3050,40 +3055,43 @@ export default function Recipe({ searchParams }: any) {
           <MyInfos />
         </div> */}
         <h1 className="font-bold text-3xl mt-4 mb-8">{recipe.title}</h1>
-        <Image
-          src={recipe.image}
-          alt={"food picture"}
-          height={324}
-          width={486}
-          style={{ width: "auto", marginTop: 18, marginBottom: 18 }}
-        />
-        <div className="max-w-7xl flex flex-col items-center justify-center ">
-          <div className="flex flex-row items-center justify-center my-4">
-            <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-zinc-700 mx-4">
+        <div className="flex flex-row items-center justify-between  my-4">
+          <Image
+            src={recipe.image}
+            alt={"food picture"}
+            height={324}
+            width={486}
+            style={{ width: "auto", marginTop: 18, marginBottom: 18 }}
+            priority
+          />
+          <div className="dark grid grid-cols-2 gap-4 flex-row items-center justify-center m-4">
+            <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700">
               <Clock />
               <h4 className="ml-4">Ready in {recipe.readyInMinutes} minutes</h4>
             </div>
 
-            {recipe.vegetarian && (
-              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-zinc-700 mx-4">
+            {
+              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-secondary">
                 <LeafyGreen />
                 <h4 className="ml-4">Vegetarian</h4>
               </div>
-            )}
-            {recipe.glutenFree && (
-              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-zinc-700 mx-4">
+            }
+            {
+              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700 ">
                 <WheatOff />
                 <h4 className="ml-4">Gluten Free</h4>
               </div>
-            )}
-            {recipe.dairyFree && (
-              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-zinc-700 mx-4">
+            }
+            {
+              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700 ">
                 <MilkOff />
                 <h4 className="ml-4">Dairy Free</h4>
               </div>
-            )}
+            }
           </div>
+        </div>
 
+        <div className="max-w-7xl flex flex-col items-center justify-center ">
           <div className="w-full flex flex-col items-center justify-center mt-8 ">
             <h2 className="font-bold  border-b-1 py-4 text-xl my-4 w-full">
               Ingredients
@@ -3091,28 +3099,25 @@ export default function Recipe({ searchParams }: any) {
 
             <div className="flex flex-row items-center justify-between my-4 w-full ">
               <p>Servings: {recipe.servings}</p>
+
               <Tabs
-                aria-label="Options"
-                selectedKey={system}
-                onSelectionChange={setSystem}
+                onValueChange={setSystem}
+                defaultValue="metric"
+                className=""
               >
-                <Tab key="metric" title="Metric"></Tab>
-                <Tab key="us" title="US"></Tab>
+                <TabsList>
+                  <TabsTrigger className="w-24" value="metric">
+                    Metric
+                  </TabsTrigger>
+                  <TabsTrigger className="w-24" value="us">
+                    US
+                  </TabsTrigger>
+                </TabsList>
               </Tabs>
             </div>
             <div className="flex flex-row justify-center items-center space-x-8 w-full">
               <Table className="w-4/6">
-                <TableCaption>
-                  A list of ingredients for the recipe.
-                </TableCaption>
-
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Image</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Ingredient</TableHead>
-                  </TableRow>
-                </TableHeader>
+                <TableHeader></TableHeader>
                 <TableBody>
                   {recipe.extendedIngredients.map((e) => {
                     return (
@@ -3143,10 +3148,7 @@ export default function Recipe({ searchParams }: any) {
                 <h3>Abbreviations</h3>
                 <Table className="text-xs">
                   <TableRow>
-                    <TableHeader>
-                      <TableHead>Abbreviation</TableHead>
-                      <TableHead>Full word</TableHead>
-                    </TableHeader>
+                    <TableHeader></TableHeader>
                   </TableRow>
                   <TableBody>
                     {abbreviations.map((e) => {
@@ -3198,7 +3200,7 @@ export default function Recipe({ searchParams }: any) {
                                 }
                                 style={{ width: "auto", height: 30 }}
                               />
-                              <p className="flex flex-col justify-center items-center text-sm font-thin">
+                              <p className="flex flex-col justify-center items-center text-sm font-light">
                                 {equipment.name}
                               </p>
                             </div>
@@ -3231,7 +3233,7 @@ export default function Recipe({ searchParams }: any) {
                           src={IMAGE_BASE_URL_EQUIPMENTS + equipment.image}
                           style={{ width: "auto", height: 30 }}
                         />
-                        <p className="flex flex-col justify-center items-center text-sm font-thin">
+                        <p className="flex flex-col justify-center items-center text-sm font-light">
                           {equipment.name}
                         </p>
                       </div>
@@ -3244,14 +3246,14 @@ export default function Recipe({ searchParams }: any) {
               Preparation
             </h3>
             <div className="flex flex-col justify-center items-start max-w-5xl ">
-              {preparation.map((step, i) => {
+              {preparation?.map((step, i) => {
                 return (
                   <div
                     key={i}
                     className="flex flex-row justify-center items-start  my-4"
                   >
-                    <div className="font-normal  w-8 h-8 mr-4">
-                      <p className="font-normal border w-8 h-8 flex flex-row justify-center items-center rounded-3xl ">
+                    <div className="font-normal w-8 h-8 mr-4">
+                      <p className="font-normal border border-primary-700 w-8 h-8 flex flex-row justify-center items-center rounded-3xl ">
                         {i + 1}
                       </p>
                     </div>
@@ -3266,47 +3268,45 @@ export default function Recipe({ searchParams }: any) {
             <h2 className="font-bold  border-b-1 py-4 text-xl my-4 w-full">
               Nutrition
             </h2>
+            <h3 className="font-bold  py-4 text-3xl my-4  ">
+             {Math.round(recipe.nutrition.nutrients[0].amount)} <span className="font-extralight  py-4 text-3xl my-4 w-full">calories</span>
+            </h3>
             <Table className="text-xs">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <div className="w-10">Nutrient</div>
-                  </TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Percent</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader></TableHeader>
               <TableBody>
                 {recipe.nutrition.nutrients.map((e, i) => {
-                  return (
-                    <TableRow key={e.name}>
-                      <TableCell>{e.name}</TableCell>
-                      <TableCell>
-                        {e.amount}
-                        {e.unit}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col gap-6 w-full max-w-md">
-                          <Progress
-                            size="md"
-                            aria-label="Percentage of daily needs"
-                            value={e.percentOfDailyNeeds}
-                          />
-                        </div>{" "}
-                      </TableCell>
-                    </TableRow>
-                  );
+                  if (i > 0) {
+                    return (
+                      <TableRow key={e.name}>
+                        <TableCell className="w-36 font-semibold">{e.name}</TableCell>
+                        <TableCell className="w-32">
+                          {e.amount}
+                          {e.unit}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-row justify-center items-center space-x-4">
+                            {" "}
+                            <Progress
+                              className=""
+                              value={e.percentOfDailyNeeds}
+                            />{" "}
+                            <div className="font-semibold">{e.percentOfDailyNeeds}%</div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
                 })}
               </TableBody>
             </Table>
 
             <div className="flex flex-row justify-center items-center space-x-8 w-full"></div>
           </div>
-          <div className="font-thin flex flex-row items-center justify-start w-full">
+          <div className="font-light flex flex-row items-center justify-start w-full my-8">
             Read the detailed instructions on
             <Link
               isExternal
-              className="font-normal ml-2"
+              className="font-normal ml-2 text-primary-500"
               href={recipe.sourceUrl}
             >
               {recipe.creditsText}

@@ -10,6 +10,8 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./@/**/*.{ts,tsx}", // <- HERE
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+
   ],
   prefix: "",
   theme: {

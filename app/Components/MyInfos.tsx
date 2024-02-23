@@ -28,7 +28,7 @@ export function MyInfos() {
       const json = await fetch("/api/getUserFromDb");
       const res = await json.json();
 
-      console.log("getUserFromDb", res)
+      console.log("getUserFromDb", res);
 
       const myInfosToUse = {
         id: res.id,
@@ -64,19 +64,19 @@ export function MyInfos() {
   return (
     <div className="mt-4 pb-8 text-xs">
       <h2 className="font-semibold">My infos</h2>
-      <p className="font-thin">
+      <p className="font-light">
         Weight: <span className="font-bold">{weight}</span>
       </p>
-      <p className="font-thin">
+      <p className="font-light">
         Height: <span className="font-bold">{height}</span>
       </p>
-      <p className="font-thin">
+      <p className="font-light">
         Activity level: <span className="font-bold">{activityLevel}</span>
       </p>
-      <p className="font-thin">
+      <p className="font-light">
         Age: <span className="font-bold">{age}</span>
       </p>
-      <p className="font-thin">
+      <p className="font-light">
         Calorie needs:<span className="font-bold">{tdee}</span> calories
       </p>
     </div>
