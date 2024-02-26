@@ -11,6 +11,7 @@ const config = {
     "./src/**/*.{ts,tsx}",
     "./@/**/*.{ts,tsx}", // <- HERE
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/primereact/**/*.{js,ts,jsx,tsx}",
 
   ],
   prefix: "",

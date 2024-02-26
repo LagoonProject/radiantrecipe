@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     const newMealPlan = await prisma.mealPlans.create({
       data: {
-        caloriesGoal: tdeeTarget,
+        caloriesGoal: parseInt(tdeeTarget),
         mealPlan: mealPlan,
         userId: user?.user_id,
         recipes: recipes,

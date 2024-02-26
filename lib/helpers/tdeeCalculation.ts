@@ -56,7 +56,6 @@ function getActivityMultiplier(activityLevel: string) {
 export function calculateTDEE(
   tdeeInfo: {
     heightCm: string;
-    heightFeet: string;
     heightInches: string;
     weight: string;
     date_of_birth: string;
@@ -66,12 +65,14 @@ export function calculateTDEE(
   },
   setTdee: Dispatch<SetStateAction<number>>
 ) {
+
+  console.log("calculateTDEE tdeeInfo", tdeeInfo)
   const userAge = calculateAge(tdeeInfo.date_of_birth);
 
-  const userInchesHeight = convertHeightToInches(
-    tdeeInfo.heightFeet,
-    tdeeInfo.heightInches
-  );
+  const heightFt = tdeeInfo.heightInches ? tdeeInfo.heightInches[0] : '0';
+  const heightIn = tdeeInfo.heightInches ? tdeeInfo.heightInches[4] : '0';
+
+  const userInchesHeight = convertHeightToInches(heightFt, heightIn);
 
   const tdeeMutiplier = getActivityMultiplier(tdeeInfo.activityLevel);
 
@@ -138,4 +139,3 @@ export function calculateTDEE(
     americanBMRFormula();
   }
 }
-

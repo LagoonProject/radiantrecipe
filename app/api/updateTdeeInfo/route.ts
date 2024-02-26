@@ -7,9 +7,9 @@ export async function POST(req: Request) {
     const user = await getUser();
 
     const body = await req.json();
-    const tdeeInfoForm = body.tdeeInfoForm;
+    const tdeeFormData = body.tdeeFormData;
 
-    console.log("Server POST tdeeInfoForm", tdeeInfoForm);
+    console.log("Server POST tdeeFormData", tdeeFormData);
 
     if (!user) {
       throw new Error("Not authenticated");
@@ -20,24 +20,21 @@ export async function POST(req: Request) {
         id: user.user_id,
       },
       data: {
-        gender: tdeeInfoForm.gender,
+        gender: tdeeFormData.gender,
         heightCm:
-          tdeeInfoForm.heightCm.length > 0
-            ? parseFloat(tdeeInfoForm.heightCm)
+          tdeeFormData.heightCm.length > 0
+            ? parseFloat(tdeeFormData.heightCm)
             : null,
-        heightFeet:
-          tdeeInfoForm.heightFeet.length > 0
-            ? parseFloat(tdeeInfoForm.heightFeet)
-            : null,
-        heightInches:
-          tdeeInfoForm.heightInches.length > 0
-            ? parseFloat(tdeeInfoForm.heightInches)
-            : null,
+
+        heightInches: tdeeFormData.heightInches,
+
         weight:
-          tdeeInfoForm.weight.length > 0 ? parseFloat(tdeeInfoForm.weight) : null,
-        date_of_birth: new Date(tdeeInfoForm.dateOfBirth),
-        units: tdeeInfoForm.units,
-        activityLevel: tdeeInfoForm.activityLevel,
+          tdeeFormData.weight.length > 0
+            ? parseFloat(tdeeFormData.weight)
+            : null,
+        date_of_birth: new Date(tdeeFormData.dateOfBirth),
+        units: tdeeFormData.units,
+        activityLevel: tdeeFormData.activityLevel,
       },
     });
 

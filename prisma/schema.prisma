@@ -23,8 +23,7 @@ model User {
   pdf_guide_downloaded Boolean? @default(false)
   weight            Decimal? @db.Decimal(6, 3) // Example: allows for a maximum weight of 999.999 kg
   heightCm          Decimal? @db.Decimal(6, 3) 
-  heightFeet        Decimal? @db.Decimal(6, 3)
-  heightInches      Decimal? @db.Decimal(6, 3) 
+  heightInches      String? 
   units             String?
   date_of_birth     DateTime?
   gender            String?
@@ -39,7 +38,7 @@ model MealPlans {
   id                Int       @id @default(autoincrement())
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  caloriesGoal      Decimal?
+  caloriesGoal      Int?
   mealPlan          Json?
   recipes           Json?
   userId            String    // Links to the User model

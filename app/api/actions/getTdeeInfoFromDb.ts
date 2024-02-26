@@ -10,8 +10,7 @@ export async function getTdeeInfoFromDb(userId: string) {
     },
     select: {
       gender: true,
-      heightCm: true,
-      heightFeet: true,
+      heightCm: true,  
       heightInches: true,
       weight: true,
       date_of_birth: true,

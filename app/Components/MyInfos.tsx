@@ -17,7 +17,7 @@ export function MyInfos() {
   const height =
     myInfos?.units === "international"
       ? myInfos?.heightCm + " cm"
-      : `${myInfos?.heightFeet}' ${myInfos?.heightInches}"`;
+      : myInfos?.heightInches;
   const activityLevel =
     myInfos?.activityLevel === "sedentary"
       ? "I'm mostly sedentary"
@@ -34,8 +34,7 @@ export function MyInfos() {
         id: res.id,
         email: res.email,
         weight: res.weight,
-        heightCm: res.heightCm,
-        heightFeet: res.heightFeet,
+        heightCm: res.heightCm,      
         heightInches: res.heightInches,
         units: res.units,
         gender: res.gender,
@@ -50,7 +49,6 @@ export function MyInfos() {
   useEffect(() => {
     const tdeeInfo = {
       heightCm: myInfos?.heightCm!,
-      heightFeet: myInfos?.heightFeet!,
       heightInches: myInfos?.heightInches!,
       weight: myInfos?.weight!,
       date_of_birth: myInfos?.dateOfbirth!,

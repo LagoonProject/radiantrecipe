@@ -10,7 +10,6 @@ export type TMyInfos = {
   email: string;
   weight: string;
   heightCm: string;
-  heightFeet: string;
   heightInches: string;
   units: string;
   gender: string;

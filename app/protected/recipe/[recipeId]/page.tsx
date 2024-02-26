@@ -3064,7 +3064,7 @@ export default function Recipe({ searchParams }: any) {
             style={{ width: "auto", marginTop: 18, marginBottom: 18 }}
             priority
           />
-          <div className="dark grid grid-cols-2 gap-4 flex-row items-center justify-center m-4">
+          <div className="dark grid grid-cols-1 lg:grid-cols-2 gap-4 flex-row items-center justify-center m-4">
             <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700">
               <Clock />
               <h4 className="ml-4">Ready in {recipe.readyInMinutes} minutes</h4>
@@ -3284,9 +3284,7 @@ export default function Recipe({ searchParams }: any) {
                           {e.unit}
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-row justify-center items-center space-x-4">
-                            {" "}
-                            <Progress
+                          <div className="flex flex-row justify-center items-center space-x-4"> <Progress
                               className=""
                               value={e.percentOfDailyNeeds}
                             />{" "}
