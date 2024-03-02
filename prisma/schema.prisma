@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Plan {
+  PRO
+  FREE
+}
+
 model User {
   id                String    @id @unique
   email             String?   @unique
@@ -18,7 +23,9 @@ model User {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   stripeCustomerId  String?
-  subsciptionEnds   DateTime?
+  stripeSessionId   String?  
+  stripeSubscriptionId   String?  
+  customerPlan      Plan?     @default(FREE)
   recipes           String[]
   pdf_guide_downloaded Boolean? @default(false)
   weight            Decimal? @db.Decimal(6, 3) // Example: allows for a maximum weight of 999.999 kg
@@ -32,6 +39,7 @@ model User {
   spoonacularPassword String?
   spoonacularHash     String?
   mealPlans           MealPlans[] // Establishes a one-to-many relationship with MealPlans
+  weightLossGoal      String?
 }
  
 model MealPlans {

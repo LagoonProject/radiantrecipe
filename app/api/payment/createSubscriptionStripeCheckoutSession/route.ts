@@ -7,20 +7,33 @@ import getUser from "@/lib/auth/get-user";
 // export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  console.log("createOneMealPlanStripeCheckoutSession");
+  console.log("createSubscriptionStripeCheckoutSession");
 
   const { tdeeTarget, iWantTo } = await req.json();
 
-  console.log("createOneMealPlanStripeCheckoutSession tdeeTarget", tdeeTarget);
+  console.log("createSubscriptionStripeCheckoutSession tdeeTarget", tdeeTarget);
 
   const user = await getUser();
+
+  // update database with the i want to value
+
+  await prisma.user.update({
+    where: {
+      id: user?.user_id,
+    },
+    data: {
+      weightLossGoal: iWantTo,
+    },
+  });
+
+  // create stripe session
 
   const session = await stripe.checkout.sessions.create({
     billing_address_collection: "auto",
 
     line_items: [
       {
-        price: "price_1OiF05EwKA5VcQIfWErBi94y",
+        price: "price_1OiF5MEwKA5VcQIf9hlULfGY",
         // For metered billing, do not pass quantity
         quantity: 1,
       },
@@ -31,13 +44,20 @@ export async function POST(req: NextRequest) {
       tdeeTarget,
       iWantTo,
     },
+    subscription_data: {
+      metadata: {
+        userId: user?.user_id as string,
+        tdeeTarget,
+        iWantTo,
+      },
+    },
 
-    mode: "payment",
-    success_url: `http://localhost:3000/api/payment/paymentSuccess?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `http://localhost:3000?canceled=true`,
+    mode: "subscription",
+    success_url: `http://localhost:3000/api/payment/subscriptionSuccess?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `http://localhost:3000/protected/purchase`,
   });
 
-  console.log("createOneMealPlanStripeCheckoutSession session id", session.url);
+
 
   return NextResponse.json({ sessionUrl: session.url });
 }

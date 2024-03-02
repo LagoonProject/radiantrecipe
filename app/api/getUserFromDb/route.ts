@@ -8,13 +8,15 @@ import { getUserFromDb } from "../actions/getUserFromDb";
 export async function GET() {
   const user = await getUser();
 
-  console.log("getUser from db route user ", user);
 
   if (!user) {
     throw new Error("Not authenticated");
   }
 
-  const currentUser = await getUserFromDb(user.user_id);
+  const currentUser = await getUserFromDb(user?.user_id);
+
+  console.log("getUser from db route currentUser ", currentUser);
+
 
   return NextResponse.json(currentUser);
 }

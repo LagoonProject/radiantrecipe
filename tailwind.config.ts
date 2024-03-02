@@ -12,7 +12,7 @@ const config = {
     "./@/**/*.{ts,tsx}", // <- HERE
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
     "./node_modules/primereact/**/*.{js,ts,jsx,tsx}",
-
+ 
   ],
   prefix: "",
   theme: {

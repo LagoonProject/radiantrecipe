@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem, Spinner } from "@nextui-org/react";
 import {
   calculateAge,
   calculateTDEE,
@@ -46,6 +46,8 @@ export const CalculateTDEE = () => {
   const { getTdee } = useContext(AppContext);
   const [tdee, setTdee] = getTdee;
 
+  const [fetchingTDEE, setFetchingTDEE] = useState(false);
+
   // form state
 
   const [tdeeInfo, setTdeeInfo] = useState({
@@ -74,6 +76,7 @@ export const CalculateTDEE = () => {
   console.log("units", units);
 
   async function getTdeeInfoFromDb() {
+    setFetchingTDEE(true);
     console.log("getTdeeInfoFromDb");
 
     const res = await fetch("/api/getTdeeInfoFromDb");
@@ -99,7 +102,8 @@ export const CalculateTDEE = () => {
   // BMR formulas
 
   useEffect(() => {
-    calculateTDEE(tdeeInfo, setTdee);
+    calculateTDEE(tdeeInfo, setTdee, setFetchingTDEE);
+    
   }, [tdeeInfo]);
 
   const resultsRef = useRef<any>(null);
@@ -380,47 +384,50 @@ export const CalculateTDEE = () => {
           </Form>
         </div>
       </div>
-      <div ref={resultsRef}>
-        <div className="text-3xl font-thin my-10 ">
-          Your{" "}
-          <span className=" font-semibold">
-            Total Daily Energy Expenditure (TDEE)
-          </span>{" "}
-          is <span className="font-semibold">{tdee} kcal/day</span>{" "}
-          <p className="text-base text-white mt-2">
-            This is the amount of calories you need to consume daily to maintain
-            your actual weight according to your activity level.
-          </p>
-        </div>
+      {fetchingTDEE && <Spinner className="my-8" />}
+      {tdee && (
+        <div ref={resultsRef}>
+          <div className="text-3xl font-thin my-10 ">
+            Your{" "}
+            <span className=" font-semibold">
+              Total Daily Energy Expenditure (TDEE)
+            </span>{" "}
+            is <span className="font-semibold">{tdee} kcal/day</span>{" "}
+            <p className="text-base text-white mt-2">
+              This is the amount of calories you need to consume daily to
+              maintain your actual weight according to your activity level.
+            </p>
+          </div>
 
-        <WeightPlans
-          tdeeTarget={tdee - 500}
-          iWantTo={"lose weight in a sustainable way"}
-          activityLevel={tdeeInfo.activityLevel}
-          caloricGoal={"Daily Caloric Goal"}
-          weightLossEstimateKg="0.45kg"
-          weightLossEstimatePounds="1 pound"
-          calculation={"TDEE - 500 kcal"}
-        />
-        <WeightPlans
-          tdeeTarget={tdee - 1000}
-          iWantTo={"lose weight fast"}
-          activityLevel={tdeeInfo.activityLevel}
-          caloricGoal={"Daily Caloric Goal"}
-          weightLossEstimateKg="0.9kg"
-          weightLossEstimatePounds="2 pound"
-          calculation={"TDEE - 1000 kcal"}
-        />
-        <WeightPlans
-          tdeeTarget={tdee}
-          iWantTo={"maintain weight"}
-          activityLevel={tdeeInfo.activityLevel}
-          caloricGoal={"Daily Caloric Goal"}
-          weightLossEstimateKg=""
-          weightLossEstimatePounds=""
-          calculation={"TDEE"}
-        />
-      </div>
+          <WeightPlans
+            tdeeTarget={tdee - 500}
+            iWantTo={"lose weight in a sustainable way"}
+            activityLevel={tdeeInfo.activityLevel}
+            caloricGoal={"Daily Caloric Goal"}
+            weightLossEstimateKg="0.45kg"
+            weightLossEstimatePounds="1 pound"
+            calculation={"TDEE - 500 kcal"}
+          />
+          <WeightPlans
+            tdeeTarget={tdee - 1000}
+            iWantTo={"lose weight fast"}
+            activityLevel={tdeeInfo.activityLevel}
+            caloricGoal={"Daily Caloric Goal"}
+            weightLossEstimateKg="0.9kg"
+            weightLossEstimatePounds="2 pound"
+            calculation={"TDEE - 1000 kcal"}
+          />
+          <WeightPlans
+            tdeeTarget={tdee}
+            iWantTo={"maintain weight"}
+            activityLevel={tdeeInfo.activityLevel}
+            caloricGoal={"Daily Caloric Goal"}
+            weightLossEstimateKg=""
+            weightLossEstimatePounds=""
+            calculation={"TDEE"}
+          />
+        </div>
+      )}
     </div>
   );
 };

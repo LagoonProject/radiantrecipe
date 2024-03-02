@@ -15,6 +15,7 @@ import { MacroPie } from "@/app/Components/MacrosPie";
 import { getWeightGoal } from "@/lib/helpers/getWeightGoal";
 import { MyInfos } from "@/app/Components/MyInfos";
 import { AppContext } from "@/context/context";
+import Link from "next/link";
 
 export interface Meal {
   id: number;
@@ -100,9 +101,9 @@ export default function MyMealPlan({ searchParams }: any) {
 
   console.log("MyMealPlans", mealPlans);
 
-  function handleClickRow(recipeId: string) {
-    router.push(`/protected/recipe/${recipeId}`);
-  }
+  // function handleClickRow(recipeId: string) {
+  //   router.push(`/protected/recipe/${recipeId}`);
+  // }
 
   if (mealPlans && mealPlans.length > 0) {
     return (
@@ -151,10 +152,7 @@ export default function MyMealPlan({ searchParams }: any) {
 
                     <p className="my-4 text-xl font-bold ">
                       {dailyMeals.nutrients.calories}
-                      <span className="my-4 text-lg font-light ">
-                        {" "}
-                        calories
-                      </span>
+                      <span className="my-4 text-lg font-light ">calories</span>
                     </p>
                     <MacroPie
                       macroDistributionInGrams={macroDistributionInGrams}
@@ -163,9 +161,8 @@ export default function MyMealPlan({ searchParams }: any) {
                     <div className="w-4/5 flex flex-col items-center justify-center  ">
                       <Table
                         className="w-5/6"
-                        isStriped
                         aria-label="My Personalized Meal Plan"
-                        onRowAction={(key) => handleClickRow(key as string)}
+                        // onRowAction={(key) => handleClickRow(key as string)}
                       >
                         <TableHeader>
                           <TableColumn align="center">
@@ -191,24 +188,37 @@ export default function MyMealPlan({ searchParams }: any) {
                         </TableHeader>
                         <TableBody>
                           {dailyMeals.meals.map((meal, i) => (
-                            <TableRow key={meal.id}>
+                            <TableRow
+                              key={meal.id}
+                              className="hover:bg-zinc-800"
+                            >
                               <TableCell>
-                                {i === 0
-                                  ? "BEAKFAST"
-                                  : i === 1
-                                  ? "LUNCH"
-                                  : "DINNER"}
+                                <Link href={`/protected/recipe/${meal.id}`}>
+                                  {i === 0
+                                    ? "BEAKFAST"
+                                    : i === 1
+                                    ? "LUNCH"
+                                    : "DINNER"}
+                                </Link>
                               </TableCell>
-                              <TableCell>{meal.title}</TableCell>
                               <TableCell>
-                                <div className="flex items-center justify-center">
-                                  {meal.readyInMinutes}min
-                                </div>
+                                <Link href={`/protected/recipe/${meal.id}`}>
+                                  {meal.title}
+                                </Link>
                               </TableCell>
                               <TableCell>
-                                <div className="flex items-center justify-center">
-                                  {meal.servings}
-                                </div>
+                                <Link href={`/protected/recipe/${meal.id}`}>
+                                  <div className="flex items-center justify-center">
+                                    {meal.readyInMinutes}min
+                                  </div>
+                                </Link>
+                              </TableCell>
+                              <TableCell>
+                                <Link href={`/protected/recipe/${meal.id}`}>
+                                  <div className="flex items-center justify-center">
+                                    {meal.servings}
+                                  </div>
+                                </Link>
                               </TableCell>
                             </TableRow>
                           ))}

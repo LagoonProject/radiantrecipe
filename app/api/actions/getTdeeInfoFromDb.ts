@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma/prisma";
 export async function getTdeeInfoFromDb(userId: string) {
   const tdeeInfo = await prisma.user.findUnique({
     where: {
-      id: userId, // Assuming the field is named 'id' in your model
+      id: userId, 
     },
     select: {
       gender: true,

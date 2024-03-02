@@ -3065,25 +3065,25 @@ export default function Recipe({ searchParams }: any) {
             priority
           />
           <div className="dark grid grid-cols-1 lg:grid-cols-2 gap-4 flex-row items-center justify-center m-4">
-            <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700">
+            <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-primary">
               <Clock />
               <h4 className="ml-4">Ready in {recipe.readyInMinutes} minutes</h4>
             </div>
 
-            {
-              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-secondary">
+            {recipe.vegetarian &&
+              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-primary">
                 <LeafyGreen />
                 <h4 className="ml-4">Vegetarian</h4>
               </div>
             }
-            {
-              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700 ">
+            {recipe.glutenFree &&
+              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-primary">
                 <WheatOff />
                 <h4 className="ml-4">Gluten Free</h4>
               </div>
             }
-            {
-              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-green-700 ">
+            {recipe.dairyFree &&
+              <div className=" flex flex-row items-center justify-center p-4 rounded-xl bg-primary">
                 <MilkOff />
                 <h4 className="ml-4">Dairy Free</h4>
               </div>
@@ -3128,7 +3128,7 @@ export default function Recipe({ searchParams }: any) {
                             height={100}
                             alt="ingredients image"
                             src={IMAGE_BASE_URL_INGREDIENTS + e.image}
-                            style={{ height: 40, width: "auto" }}
+                            style={{ height: 30, width: "auto" }}
                           />
                         </TableCell>
                         <TableCell>
@@ -3146,7 +3146,7 @@ export default function Recipe({ searchParams }: any) {
               </Table>
               <div className="w-2/6 flex flex-col justify-center items-center ">
                 <h3>Abbreviations</h3>
-                <Table className="text-xs">
+                <Table className="text-xs bg-zinc-800">
                   <TableRow>
                     <TableHeader></TableHeader>
                   </TableRow>
@@ -3170,49 +3170,7 @@ export default function Recipe({ searchParams }: any) {
               Instructions
             </h2>
 
-            {/* {recipe.analyzedInstructions.map((instruction) => {
-              return instruction.steps.map((step) => {
-                return (
-                  <div
-                    className="flex flex-row justify-between items-center border-b-1 py-8 border-zinc-600 w-full"
-                    key={step.number}
-                  >
-                    <p className=" text-2xl font-semibold flex justify-center w-1/5">
-                      {step.number}
-                    </p>
-                    <div className="flex flex-col items-start justify-center w-4/5">
-                      <div className="flex flex-row justify-center space-x-6  my-8 bg-slate-800 p-4 rounded-3xl">
-                        <p className="flex flex-col justify-center items-center text-sm font-normal">
-                          Equipment
-                        </p>
-                        {step.equipment?.map((equipment) => {
-                          return (
-                            <div
-                              className="flex flex-col justify-center items-center"
-                              key={equipment.id}
-                            >
-                              <Image
-                                width={100}
-                                height={100}
-                                alt="equipment image"
-                                src={
-                                  IMAGE_BASE_URL_EQUIPMENTS + equipment.image
-                                }
-                                style={{ width: "auto", height: 30 }}
-                              />
-                              <p className="flex flex-col justify-center items-center text-sm font-light">
-                                {equipment.name}
-                              </p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <p>{step.step}</p>
-                    </div>
-                  </div>
-                );
-              });
-            })} */}
+       
             <h3 className="font-semibold  py-4 text-base my-4 w-full">
               Equipment
             </h3>

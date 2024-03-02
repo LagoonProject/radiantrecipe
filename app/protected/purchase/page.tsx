@@ -7,11 +7,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe/stripe";
 import { getWeightGoal } from "@/lib/helpers/getWeightGoal";
+import { createSubscriptionStripeSession } from "@/lib/stripe/createSubscriptionCheckoutSession";
 
 export default function Purchase({ searchParams }: any) {
   const { tdeeTarget, iWantTo } = searchParams;
-
-
 
   const weightGoal = getWeightGoal(iWantTo);
 
@@ -52,16 +51,16 @@ export default function Purchase({ searchParams }: any) {
             </h2>
           </div>
           <h2 className="font-normal text-2xl  my-2 leading-relaxed">
-            Knowing exactly what to eat to consume precisely {tdeeTarget} calories
-            each day can be challenging.
+            Knowing exactly what to eat to consume precisely {tdeeTarget}{" "}
+            calories each day can be challenging.
           </h2>
           <h2 className="font-normal text-2xl mt-2 mb-12 leading-relaxed">
             That&apos;s why we offer you a{" "}
             <span className="font-bold">Personalized Weekly Meal Plan</span>.
             This plan is meticulously crafted to meet your daily caloric needs,
             providing you with exactly{" "}
-            <span className="font-bold">{tdeeTarget} calories per day</span> for a
-            week, assisting you in losing 0.45 kg (1 pound) every week.
+            <span className="font-bold">{tdeeTarget} calories per day</span> for
+            a week, assisting you in losing 0.45 kg (1 pound) every week.
           </h2>
 
           <h2 className="font-bold text-xl my-2">How Does It Work?</h2>
@@ -135,15 +134,19 @@ export default function Purchase({ searchParams }: any) {
               </h2>
             </div>
 
-            <div className="flex flex-col justify-center items-center border border-zinc-600 rounded-2xl p-4 bg-zinc-900 w-2/4 h-64 hover:bg-zinc-800">
-              <h2 className="font-bold text-xl my-2">
-                Monthly Radiant Recipe Subscription.
-              </h2>
+            <div
+              onClick={() =>
+                createSubscriptionStripeSession(window, tdeeTarget, iWantTo)
+              }
+              className="flex flex-col justify-center items-center border border-zinc-600 rounded-2xl p-4 bg-zinc-900 w-2/4 h-64 hover:bg-zinc-800"
+            >
+              <h2 className="font-bold text-xl my-2">Radiant Recipe Pro</h2>
               <h2 className="font-light text-base my-2 text-center">
-                Access thousands of delicious recipes responding to your exact
-                caloric goals.
+                Access thousands of delicious recipes corresponding to your
+                exact caloric goals and preparation time, and build your own
+                meal plans.
               </h2>
-              <h2 className="font-bold text-3xl my-2">9.99€/month</h2>
+              <h2 className="font-bold text-3xl my-2">3.99€/month</h2>
               <h2 className="font-light text-base my-2">Cancel anytime.</h2>
             </div>
           </div>

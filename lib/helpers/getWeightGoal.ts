@@ -9,6 +9,19 @@ export function getWeightGoal(iWantTo: string) {
   }
 }
 
+export function getTDEETarget(tdee: number | undefined, iWantTo: string) {
+  if (tdee) {
+    switch (iWantTo) {
+      case "maintain weight":
+        return tdee;
+      case "lose weight fast":
+        return tdee - 1000;
+      case "lose weight in a sustainable way":
+        return tdee - 500;
+    }
+  }
+}
+
 export function getWeightLossGoalFromTdee(tdee: number, tdeeTarget: number) {
   if (tdee - tdeeTarget > 0 && tdee - tdeeTarget <= 500) {
     return "losing 0.45kg (1 pound)";

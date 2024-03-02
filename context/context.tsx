@@ -22,7 +22,7 @@ interface IAppValue {
     TIsPDFDownloaded,
     Dispatch<SetStateAction<TIsPDFDownloaded>>
   ];
-  getTdee: [number, Dispatch<SetStateAction<number>>];
+  getTdee: [number|undefined, Dispatch<SetStateAction<number|undefined>>];
   getTdeeTarget: [number, Dispatch<SetStateAction<number>>];
   getMyInfos: [
     TMyInfos | undefined,
@@ -40,7 +40,7 @@ export const AppContext = React.createContext<IAppValue>(null!);
 export const AppContextProvider = ({ children }: { children: any }) => {
   const [isPDFDownloaded, setIsPDFDownloaded] =
     React.useState<TIsPDFDownloaded>(undefined);
-  const [tdee, setTdee] = useState(0);
+  const [tdee, setTdee] = useState<number|undefined>();
   const [tdeeTarget, setTdeeTarget] = useState(0);
   const [myInfos, setMyInfos] = useState<TMyInfos | undefined>();
   const [mealPlans, setMealPlans] = useState<MealPlanResponse[] | [] | null>(

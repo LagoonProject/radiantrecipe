@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
+import prisma from "@/lib/prisma/prisma";
 import { stripe } from "@/lib/stripe/stripe";
 import Stripe from "stripe";
 import getRawBody from "raw-body";
@@ -16,8 +16,7 @@ export const config = {
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
-
-//  ce webhook sert uniquement pour mettre à jour la DB avec les informations de la souscription (à savoir est-ce que la souscription etst en cours ou si elle a été résiliée).
+  //  ce webhook sert uniquement pour mettre à jour la DB avec les informations de la souscription (à savoir est-ce que la souscription etst en cours ou si elle a été résiliée).
 
   try {
     if (req.method !== "POST")
@@ -51,39 +50,28 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
 
-    // console.log("event", JSON.stringify(event));
+    console.log("event.type", event.type);
 
-    console.log("event.type", JSON.stringify(event.type));
+    if (event.type === "customer.subscription.updated") {
+      const subscription = event.data.object as Stripe.Subscription;
 
-    if (event.type === "checkout.session.completed") {
-      const checkoutSession = await stripe.checkout.sessions.retrieve(
-        (event.data.object as any).id,
-        {
-          expand: ["line_items"],
-        }
+      console.log(
+        "--WH subscription.metadata.userId ",
+        subscription.metadata.userId
       );
+      console.log("--WH subscription.cancel_at ", subscription.cancel_at);
+      console.log("--WH event.data.object", event.data.object);
 
-      console.log("checkoutSession", checkoutSession);
-
-      const lineItems = checkoutSession.line_items;
-
-      if (!lineItems)
-        return NextResponse.json(
-          {
-            message: "Internal server error",
+      // Save an order in your database, marked as 'awaiting payment'
+      if (subscription.metadata.userId && subscription.cancel_at) {
+        await prisma.user.update({
+          where: {
+            id: subscription.metadata.userId,
           },
-          {
-            status: 500,
-          }
-        );
-
-      try {
-        // Save the data, change customer account info, etc
-  
-        console.log("lineItems", lineItems);
-        console.log("event.data.object.metadata ", event.data.object.metadata as any);
-      } catch (error) {
-        console.log("Handling when you're unable to save an order");
+          data: {
+            customerPlan: "FREE",
+          },
+        });
       }
     }
 

@@ -63,14 +63,14 @@ export function calculateTDEE(
     units: string;
     activityLevel: string;
   },
-  setTdee: Dispatch<SetStateAction<number>>
+  setTdee: Dispatch<SetStateAction<number | undefined>>,
+  setFetchingTDEE: Dispatch<SetStateAction<boolean>>
 ) {
-
-  console.log("calculateTDEE tdeeInfo", tdeeInfo)
+  console.log("calculateTDEE tdeeInfo", tdeeInfo);
   const userAge = calculateAge(tdeeInfo.date_of_birth);
 
-  const heightFt = tdeeInfo.heightInches ? tdeeInfo.heightInches[0] : '0';
-  const heightIn = tdeeInfo.heightInches ? tdeeInfo.heightInches[4] : '0';
+  const heightFt = tdeeInfo.heightInches ? tdeeInfo.heightInches[0] : "0";
+  const heightIn = tdeeInfo.heightInches ? tdeeInfo.heightInches[4] : "0";
 
   const userInchesHeight = convertHeightToInches(heightFt, heightIn);
 
@@ -103,6 +103,8 @@ export function calculateTDEE(
       const tdee = bmrCalc * tdeeMutiplier;
 
       setTdee(Math.round(tdee));
+      setFetchingTDEE(false)
+
     }
   }
 
@@ -131,6 +133,7 @@ export function calculateTDEE(
       const tdee = bmrCalc * tdeeMutiplier;
 
       setTdee(tdee);
+      setFetchingTDEE(false)
     }
   }
   if (tdeeInfo.units === "international") {

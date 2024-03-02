@@ -1,8 +1,8 @@
 import getUser from "@/lib/auth/get-user";
 import { CreateAnAccount } from "./Components/CreateAnAccount";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { DownloadPDFButton } from "./Components/DownloadPDFButton";
-import { CalculateTDEE} from "./Components/CalculateTDEE";
+import { CalculateTDEE } from "./Components/CalculateTDEE";
 
 export default async function Home() {
   const user = await getUser();
@@ -14,7 +14,9 @@ export default async function Home() {
       <h1 className="text-3xl font-bold my-6">Welcome to Radiant Recipe!</h1>
       {!user && <CreateAnAccount />}
       {user && <DownloadPDFButton />}
-      {user && <CalculateTDEE />}
+ 
+        {user && <CalculateTDEE />}
+    
     </main>
   );
 }

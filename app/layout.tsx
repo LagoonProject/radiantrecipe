@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 import { twMerge } from "tailwind-merge";
 
-import { NavBar } from "./Components/NavBar";
+import { NavBar } from "./Components/NavBar/NavBar";
 
 import { cookies } from "next/headers";
 
